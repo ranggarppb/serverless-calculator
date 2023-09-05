@@ -5,6 +5,7 @@ import (
 
 	"github.com/GoogleCloudPlatform/functions-framework-go/functions"
 	"github.com/ranggarppb/serverless-calculator/rest"
+	calculator "github.com/ranggarppb/serverless-calculator/service"
 )
 
 func init() {
@@ -12,11 +13,14 @@ func init() {
 }
 
 func Calculate(w http.ResponseWriter, r *http.Request) {
-	switch r.Method {
-	case GetMethod:
-		rest.HandleGet(w, r)
-	case PostMethod:
-		rest.HandlePost(w, r)
-	}
+	calculatorService := calculator.NewCalculatorService()
 
+	restHandler := rest.NewRestHandler(calculatorService)
+
+	switch r.URL.Path {
+	case "/calculation":
+		restHandler.HandleCalculation(w, r)
+	case "/":
+		restHandler.HandleReadinessLiveness(w, r)
+	}
 }
