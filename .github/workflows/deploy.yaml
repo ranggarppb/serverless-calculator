@@ -1,0 +1,35 @@
+name: Deployment Workflow
+on:
+  push:
+    branches:
+      - main
+permissions:
+      id-token: write 
+      contents: read
+jobs:
+  Deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+    steps:
+      - name: Git clone the repository
+        uses: actions/checkout@v3
+          
+      - name: Authenticate to Google Cloud
+        id: auth
+        uses: google-github-actions/auth@v1
+        with:
+          workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.SERVICE_ACCOUNT }}
+
+      - nane: 'Deploy to Google Cloud Function'
+        id: deploy
+        uses: 'google-github-actions/deploy-cloud-functions@v1'
+        with:
+          name: 'serverless-calculator'
+          runtime: 'go121'
+          region: 'asia-southeast-2'
+          source_dir: '.'
+          entry_point: 'Calculate'
+          max_instances: 83
