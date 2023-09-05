@@ -1,4 +1,4 @@
-package main
+package serverless_calculator
 
 import (
 	"encoding/json"
