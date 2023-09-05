@@ -1,14 +1,19 @@
 package types
 
-import (
-	"net/http"
-)
-
 type CalculatorInput struct {
 	Input string `json:"input"`
 }
 
+type CalculatorResult struct {
+	Input  string `json:"input"`
+	Result string `json:"result"`
+}
+
+type CalculatorHistory struct {
+	Result []string `json:"result"`
+}
+
 type ICalculatorService interface {
-	GetCalculationHistory(w http.ResponseWriter)
-	Calculate(w http.ResponseWriter, input string)
+	GetCalculationHistory() []string
+	Calculate(input string) string
 }

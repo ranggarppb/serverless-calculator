@@ -25,19 +25,45 @@ func (h *restHandler) HandleReadinessLiveness(w http.ResponseWriter, r *http.Req
 }
 
 func (h *restHandler) HandleCalculation(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
 	switch r.Method {
 	case http.MethodGet:
-		h.calculatorService.GetCalculationHistory(w)
+		history := h.calculatorService.GetCalculationHistory()
+
+		calculatorHistory := types.CalculatorHistory{
+			Result: history,
+		}
+
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(calculatorHistory)
+
+		return
+
 	case http.MethodPost:
 		var calculator types.CalculatorInput
-		if err := json.NewDecoder(r.Body).Decode(&calculator); err != nil {
-			fmt.Fprint(w, "Hello, World!")
+		if err := json.NewDecoder(r.Body).Decode(&calculator); err != nil || calculator.Input == "" {
+			w.WriteHeader(http.StatusBadRequest)
+			http.Error(w, fmt.Sprintf("error reading request body, %v", err), http.StatusBadRequest)
+
 			return
 		}
-		if calculator.Input == "" {
-			fmt.Fprint(w, "Hello, World!")
-			return
+
+		result := h.calculatorService.Calculate(calculator.Input)
+
+		calculatorResult := types.CalculatorResult{
+			Result: result,
 		}
-		h.calculatorService.Calculate(w, calculator.Input)
+
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(calculatorResult)
+
+		return
+
+	default:
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		http.Error(w, "error method not allowed", http.StatusMethodNotAllowed)
+
+		return
 	}
 }
