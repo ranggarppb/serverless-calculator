@@ -41,4 +41,4 @@ jobs:
           --entry-point Calculate
           --trigger-http
           --allow-unauthenticated
-          --ma-instance=83
+          --max-instance=83
