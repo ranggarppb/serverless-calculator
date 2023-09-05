@@ -32,14 +32,13 @@ jobs:
           version: '>= 444.0.0'
 
       - name: 'Use GCloud CLI'
-        run: 
-          - >
-            gcloud functions deploy ${{ env.APPLICATION_NAME }}
-            --gen2
-            --runtime=go121
-            --region=asia-southeast2
-            --source=.
-            --entry-point Calculate
-            --trigger-http
-            --allow-unauthenticated
-            --ma-instance=83
+        run: >-
+          gcloud functions deploy ${{ env.APPLICATION_NAME }}
+          --gen2
+          --runtime=go121
+          --region=asia-southeast2
+          --source=.
+          --entry-point Calculate
+          --trigger-http
+          --allow-unauthenticated
+          --ma-instance=83
