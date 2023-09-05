@@ -23,7 +23,7 @@ jobs:
           workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
           service_account: ${{ secrets.SERVICE_ACCOUNT }}
 
-      - nane: 'Deploy to Google Cloud Function'
+      - name: 'Deploy to Google Cloud Function'
         id: deploy
         uses: 'google-github-actions/deploy-cloud-functions@v1'
         with:
