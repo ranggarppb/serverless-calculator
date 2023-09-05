@@ -20,6 +20,7 @@ jobs:
         id: auth
         uses: google-github-actions/auth@v1
         with:
+          project_id: serverless-calculator
           workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
           service_account: ${{ secrets.SERVICE_ACCOUNT }}
 
