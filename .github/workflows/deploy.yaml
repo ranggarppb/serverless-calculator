@@ -30,7 +30,7 @@ jobs:
         with:
           name: 'serverless-calculator'
           runtime: 'go121'
-          region: 'asia-southeast-2'
+          region: 'asia-southeast2'
           source_dir: '.'
           entry_point: 'Calculate'
           max_instances: 83
