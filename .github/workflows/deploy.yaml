@@ -6,6 +6,8 @@ on:
 permissions:
       id-token: write 
       contents: read
+env:
+  APPLICATION_NAME: 'serverless-calculator'
 jobs:
   Deploy:
     runs-on: ubuntu-latest
@@ -20,17 +22,24 @@ jobs:
         id: auth
         uses: google-github-actions/auth@v1
         with:
-          project_id: serverless-calculator
+          project_id: ${{ env.APPLICATION_NAME }}
           workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
           service_account: ${{ secrets.SERVICE_ACCOUNT }}
 
-      - name: 'Deploy to Google Cloud Function'
-        id: deploy
-        uses: 'google-github-actions/deploy-cloud-functions@v1'
+      - name: 'Set up GCloud SDK'
+        uses: 'google-github-actions/setup-gcloud@v1'
         with:
-          name: 'serverless-calculator'
-          runtime: 'go121'
-          region: 'asia-southeast2'
-          source_dir: '.'
-          entry_point: 'Calculate'
-          max_instances: 83
+        version: '>= 444.0.0'
+
+      - name: 'Use GCloud CLI'
+        run: 
+          - >
+            gcloud functions deploy ${{ env.APPLICATION_NAME }}
+            --gen2
+            --runtime=go121
+            --region=asia-southeast2
+            --source=.
+            --entry-point Calculate
+            --trigger-http
+            --allow-unauthenticated
+            --ma-instance=83
