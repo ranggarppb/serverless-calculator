@@ -29,7 +29,7 @@ jobs:
         with:
           version: '>= 444.0.0'
 
-      - name: 'Deploy Test Function'
+      - name: 'Deploy test function'
         run: >-
           gcloud functions deploy "${{ env.APPLICATION_NAME }}-test"
           --gen2
@@ -46,7 +46,8 @@ jobs:
         with:
           command: run "${{ github.workspace }}/load-test/load-test.yml" --output "${{ github.workspace }}/load-test/load-test-report.json"
 
-      - uses: actions/upload-artifact@v3
+      - name: Upload result to artifact
+        uses: actions/upload-artifact@v3
         with:
           name: load-test-artifact
           path: "${{ github.workspace }}/load-test/load-test-report.json"
