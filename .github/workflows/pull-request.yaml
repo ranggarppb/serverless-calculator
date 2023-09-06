@@ -1,0 +1,22 @@
+name: Pull Request Checking Workflow
+on:
+  pull_request:
+    types: [opened]
+
+jobs:
+
+  Test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.21'
+
+      - name: Build
+        run: go build -v ./...
+
+      - name: Test
+        run: go test -v ./...
