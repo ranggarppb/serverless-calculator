@@ -15,7 +15,12 @@ type CalculatorHistory struct {
 	Result []string `json:"result"`
 }
 
-type CalculationWithTwoInput struct {
+type CalculationWithOneInput struct {
+	Input1    decimal.Decimal
+	Operation string
+}
+
+type CalculationWithMultipleInput struct {
 	Input1    decimal.Decimal
 	Input2    decimal.Decimal
 	Operation string
