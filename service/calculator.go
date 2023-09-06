@@ -31,35 +31,117 @@ func (c *calculatorService) Calculate(input string) (string, types.WrappedError)
 		return "", err
 	}
 
-	switch parsedInput.Operation {
-	case utils.ADDITION:
-		return parsedInput.Input1.Add(parsedInput.Input2).String(), nil
-	case utils.SUBSTRACTION:
-		return parsedInput.Input1.Sub(parsedInput.Input2).String(), nil
-	case utils.MULTIPLICATION:
-		return parsedInput.Input1.Mul(parsedInput.Input2).String(), nil
-	case utils.DIVISION:
-		return parsedInput.Input1.Div(parsedInput.Input2).String(), nil
+	switch input := parsedInput.(type) {
+	case types.CalculationWithOneInput:
+		return c.doCalculationWithOneInput(input)
+	case types.CalculationWithMultipleInput:
+		return c.doCalculationWithMultipleInput(input)
 	default:
 		return "", types.ErrInvalidOperation
 	}
 }
 
-func (c *calculatorService) parseInput(input string) (types.CalculationWithTwoInput, types.WrappedError) {
+func (c *calculatorService) parseInput(input string) (interface{}, types.WrappedError) {
 	inputs := strings.Split(input, " ")
 
-	if len(inputs) != 3 || !(utils.ContainString(utils.ALLOWED_OPERATIONS, inputs[1])) {
-		return types.CalculationWithTwoInput{}, types.ErrInvalidOperation
+	calculationType, err := c.getCalculationType(inputs)
+
+	if err != nil {
+		return nil, err
 	}
 
-	num1, err := decimal.NewFromString(inputs[0])
-	if err != nil {
-		return types.CalculationWithTwoInput{}, types.ErrInvalidInputToBeOperated
-	}
-	num2, err := decimal.NewFromString(inputs[2])
-	if err != nil {
-		return types.CalculationWithTwoInput{}, types.ErrInvalidInputToBeOperated
+	switch calculationType.(type) {
+	case types.CalculationWithOneInput:
+		res, err := c.validateAndConstructCalculationOneInput(inputs)
+
+		if err != nil {
+			return types.CalculationWithOneInput{}, nil
+		}
+
+		return res, nil
+	case types.CalculationWithMultipleInput:
+		res, err := c.validateAndConstructCalculationMultipleInput(inputs)
+
+		if err != nil {
+			return types.CalculationWithMultipleInput{}, err
+		}
+
+		return res, nil
+	default:
+		return nil, types.ErrInvalidOperation
 	}
 
-	return types.CalculationWithTwoInput{Input1: num1, Input2: num2, Operation: inputs[1]}, nil
+}
+
+func (c *calculatorService) getCalculationType(inputs []string) (interface{}, types.WrappedError) {
+	if len(inputs) == 0 {
+		return nil, types.ErrInvalidInput
+	}
+
+	_, err := decimal.NewFromString(inputs[0])
+
+	if err != nil {
+		return types.CalculationWithOneInput{}, nil
+	} else {
+		return types.CalculationWithMultipleInput{}, nil
+	}
+}
+
+func (c *calculatorService) validateAndConstructCalculationOneInput(inputs []string) (types.CalculationWithOneInput, types.WrappedError) {
+	if len(inputs) != 2 || !(utils.ContainString(utils.OPERATIONS_WITH_ONE_INPUTS, inputs[0])) {
+		return types.CalculationWithOneInput{}, types.ErrInvalidOperation
+	}
+
+	num, err := decimal.NewFromString(inputs[1])
+
+	if err != nil {
+		return types.CalculationWithOneInput{}, types.ErrInvalidInputToBeOperated
+	}
+	return types.CalculationWithOneInput{Input1: num, Operation: inputs[0]}, nil
+}
+
+func (c *calculatorService) doCalculationWithOneInput(input types.CalculationWithOneInput) (string, types.WrappedError) {
+	switch input.Operation {
+	case utils.NEGATION:
+		return input.Input1.Neg().String(), nil
+	case utils.SQUARE:
+		power := decimal.NewFromInt(2)
+		return input.Input1.Pow(power).String(), nil
+	case utils.SQUAREROOT:
+		power := decimal.NewFromFloat(0.5)
+		return input.Input1.Pow(power).String(), nil
+	case utils.ABSOLUTE:
+		return input.Input1.Abs().String(), nil
+	default:
+		return "", types.ErrInvalidOperation
+	}
+}
+
+func (c *calculatorService) validateAndConstructCalculationMultipleInput(inputs []string) (types.CalculationWithMultipleInput, types.WrappedError) {
+	if len(inputs) != 3 || !(utils.ContainString(utils.OPERATIONS_WITH_TWO_INPUTS, inputs[1])) {
+		return types.CalculationWithMultipleInput{}, types.ErrInvalidOperation
+	}
+
+	num1, err1 := decimal.NewFromString(inputs[0])
+	num2, err2 := decimal.NewFromString(inputs[2])
+
+	if !(err1 == nil && err2 == nil) {
+		return types.CalculationWithMultipleInput{}, types.ErrInvalidInputToBeOperated
+	}
+	return types.CalculationWithMultipleInput{Input1: num1, Input2: num2, Operation: inputs[1]}, nil
+}
+
+func (c *calculatorService) doCalculationWithMultipleInput(input types.CalculationWithMultipleInput) (string, types.WrappedError) {
+	switch input.Operation {
+	case utils.ADDITION:
+		return input.Input1.Add(input.Input2).String(), nil
+	case utils.SUBSTRACTION:
+		return input.Input1.Sub(input.Input2).String(), nil
+	case utils.MULTIPLICATION:
+		return input.Input1.Mul(input.Input2).String(), nil
+	case utils.DIVISION:
+		return input.Input1.Div(input.Input2).String(), nil
+	default:
+		return "", types.ErrInvalidOperation
+	}
 }
