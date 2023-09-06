@@ -55,7 +55,7 @@ func (c *calculatorService) parseInput(input string) (interface{}, types.Wrapped
 		res, err := c.validateAndConstructCalculationOneInput(inputs)
 
 		if err != nil {
-			return types.CalculationWithOneInput{}, nil
+			return types.CalculationWithOneInput{}, err
 		}
 
 		return res, nil
