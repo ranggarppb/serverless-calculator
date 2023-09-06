@@ -4,6 +4,7 @@ go 1.21.0
 
 require (
 	github.com/GoogleCloudPlatform/functions-framework-go v1.7.4
+	github.com/shopspring/decimal v1.3.1
 	github.com/stretchr/testify v1.8.1
 )
 
