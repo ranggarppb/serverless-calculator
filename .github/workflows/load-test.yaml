@@ -41,6 +41,9 @@ jobs:
           --allow-unauthenticated
           --max-instances=83
 
+  LoadTest:
+    runs-on: ubuntu-latest
+    steps:
       - name: Execute load tests
         uses: artilleryio/action-cli@v1
         with:
