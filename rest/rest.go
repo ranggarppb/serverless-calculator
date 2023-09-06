@@ -31,43 +31,48 @@ func (h *restHandler) HandleCalculation(w http.ResponseWriter, r *http.Request) 
 	case http.MethodGet:
 		history := h.calculatorService.GetCalculationHistory()
 
-		calculatorHistory := types.CalculatorHistory{
-			Result: history,
-		}
-
-		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(calculatorHistory)
+		h.handleSuccess(w, types.CalculatorHistory{Result: history})
 
 		return
 
 	case http.MethodPost:
 		var calculator types.CalculatorInput
 		if err := json.NewDecoder(r.Body).Decode(&calculator); err != nil || calculator.Input == "" {
-			w.WriteHeader(http.StatusBadRequest)
-			http.Error(w, fmt.Sprintf("error reading request body, %v", err), http.StatusBadRequest)
-
+			h.handleError(w, types.ErrInvalidInput)
 			return
 		}
 
 		result, err := h.calculatorService.Calculate(calculator.Input)
 
 		if err != nil {
+			h.handleError(w, err)
 			return
 		}
 
-		calculatorResult := types.CalculatorResult{
-			Result: result,
-		}
-
-		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(calculatorResult)
+		h.handleSuccess(w, types.CalculatorResult{Result: result})
 
 		return
 
 	default:
-		w.WriteHeader(http.StatusMethodNotAllowed)
-		http.Error(w, "error method not allowed", http.StatusMethodNotAllowed)
+		h.handleError(w, types.ErrInvalidMethod)
 
 		return
 	}
+}
+
+func (h *restHandler) handleSuccess(w http.ResponseWriter, result interface{}) {
+	w.WriteHeader(http.StatusOK)
+
+	json.NewEncoder(w).Encode(result)
+}
+
+func (h *restHandler) handleError(w http.ResponseWriter, err types.WrappedError) {
+	w.WriteHeader(err.StatusCode())
+
+	errorResponse := types.ErrorResponse{
+		ErrorCode:    err.ErrCode(),
+		ErrorMessage: err.Error(),
+	}
+
+	json.NewEncoder(w).Encode(errorResponse)
 }
