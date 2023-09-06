@@ -1,0 +1,23 @@
+config:
+  target: "https://asia-southeast2-serverless-calculator.cloudfunctions.net/serverless-calculator-test"
+  phases:
+    - duration: 30
+      arrivalRate: 20
+      name: "Warming up"
+    - duration: 60
+      arrivalRate: 20
+      rampTo: 100
+      name: "Ramping up"
+    - duration: 60
+      arrivalRate: 100
+      name: "Sustained load"
+  processor: "./processor.js"
+
+scenarios:
+  - name: "POST calculation"
+    flow:
+      - post:
+          url: "/calculation"
+          beforeRequest: generateInput
+          json:
+            input: "{{ input }}"
