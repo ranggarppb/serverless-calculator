@@ -1,0 +1,42 @@
+name: Deploy Test Env Workflow
+on: workflow_dispatch
+permissions:
+      id-token: write
+      contents: read
+env:
+  APPLICATION_NAME: 'serverless-calculator'
+jobs:
+
+  Deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+    steps:
+      - name: Git clone the repository
+        uses: actions/checkout@v3
+
+      - name: Authenticate to Google Cloud
+        id: auth
+        uses: google-github-actions/auth@v1
+        with:
+          project_id: ${{ env.APPLICATION_NAME }}
+          workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.SERVICE_ACCOUNT }}
+
+      - name: 'Set up GCloud SDK'
+        uses: 'google-github-actions/setup-gcloud@v1'
+        with:
+          version: '>= 444.0.0'
+
+      - name: 'Deploy test function'
+        run: >-
+          gcloud functions deploy "${{ env.APPLICATION_NAME }}-test"
+          --gen2
+          --runtime=go121
+          --region=asia-southeast2
+          --source=.
+          --entry-point Calculate
+          --trigger-http
+          --allow-unauthenticated
+          --max-instances=83
