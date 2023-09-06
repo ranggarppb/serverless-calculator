@@ -7,7 +7,7 @@ env:
   APPLICATION_NAME: 'serverless-calculator'
 jobs:
 
-  Deploy:
+  DeployAndLoadTest:
     runs-on: ubuntu-latest
     permissions:
       contents: 'read'
@@ -41,15 +41,12 @@ jobs:
           --allow-unauthenticated
           --max-instances=83
 
-  LoadTest:
-    runs-on: ubuntu-latest
-    steps:
       - name: Execute load tests
         uses: artilleryio/action-cli@v1
         with:
-          command: run ${GITHUB_WORKSPACE}/load-test/load-test.yml --output ${GITHUB_WORKSPACE}/load-test/load-test-report.json
+          command: run "${GITHUB_WORKSPACE}/load-test/load-test.yml" --output "${GITHUB_WORKSPACE}/load-test/load-test-report.json"
 
       - uses: actions/upload-artifact@v3
         with:
           name: load-test-artifact
-          path: ${GITHUB_WORKSPACE}/load-test/load-test-report.json
+          path: "${GITHUB_WORKSPACE}/load-test/load-test-report.json"
