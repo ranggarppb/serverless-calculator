@@ -28,31 +28,31 @@ func (s *calculatorTestSuite) TestParsingInput() {
 	testCases := []struct {
 		Desc        string
 		Input       string
-		ExpectedRes []interface{}
+		ExpectedRes types.CalculationWithTwoInput
 		ExpectedErr error
 	}{
 		{
 			Desc:        "success-parsing-with-normal-input",
 			Input:       fmt.Sprintf("%v add %v", input1, input2),
-			ExpectedRes: []interface{}{input1Dec, "add", input2Dec},
+			ExpectedRes: types.CalculationWithTwoInput{Input1: input1Dec, Input2: input2Dec, Operation: "add"},
 			ExpectedErr: nil,
 		},
 		{
 			Desc:        "failed-parsing-with-inputs-not-separated-by-space",
 			Input:       fmt.Sprintf("%vadd %v", input1, input2),
-			ExpectedRes: []interface{}{},
+			ExpectedRes: types.CalculationWithTwoInput{},
 			ExpectedErr: types.ErrInvalidOperation,
 		},
 		{
 			Desc:        "failed-parsing-when-containing-not-allowed-operation",
 			Input:       "1 random 2",
-			ExpectedRes: []interface{}{},
+			ExpectedRes: types.CalculationWithTwoInput{},
 			ExpectedErr: types.ErrInvalidOperation,
 		},
 		{
 			Desc:        "failed-parsing-when-containing-input-cannot-be-operated",
 			Input:       "add add 2",
-			ExpectedRes: []interface{}{},
+			ExpectedRes: types.CalculationWithTwoInput{},
 			ExpectedErr: types.ErrInvalidInputToBeOperated,
 		},
 	}
