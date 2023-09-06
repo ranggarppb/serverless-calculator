@@ -296,6 +296,30 @@ func (s *calculatorTestSuite) TestParsingInput() {
 			ExpectedRes: types.CalculationWithMultipleInput{Input1: input1Dec, Input2: input2Dec, Operation: "add"},
 			ExpectedErr: nil,
 		},
+		{
+			Desc:        "failed-calculation-with-one-input-invalid-input-to-be-operated",
+			Input:       "sqr random",
+			ExpectedRes: "",
+			ExpectedErr: types.ErrInvalidInputToBeOperated,
+		},
+		{
+			Desc:        "failed-calculation-with-multiple-input-invalid-input-to-be-operated",
+			Input:       "1 add random",
+			ExpectedRes: "",
+			ExpectedErr: types.ErrInvalidInputToBeOperated,
+		},
+		{
+			Desc:        "failed-calculation-with-one-input-invalid-invalid-operation",
+			Input:       "random 1",
+			ExpectedRes: "",
+			ExpectedErr: types.ErrInvalidOperation,
+		},
+		{
+			Desc:        "failed-calculation-with-multiple-input-invalid-operation",
+			Input:       "1 random 3",
+			ExpectedRes: "",
+			ExpectedErr: types.ErrInvalidOperation,
+		},
 	}
 
 	for _, tC := range testCases {
