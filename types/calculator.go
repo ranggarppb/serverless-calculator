@@ -1,5 +1,7 @@
 package types
 
+import "github.com/shopspring/decimal"
+
 type CalculatorInput struct {
 	Input string `json:"input"`
 }
@@ -11,6 +13,12 @@ type CalculatorResult struct {
 
 type CalculatorHistory struct {
 	Result []string `json:"result"`
+}
+
+type CalculationWithTwoInput struct {
+	Input1    decimal.Decimal
+	Input2    decimal.Decimal
+	Operation string
 }
 
 type ICalculatorService interface {

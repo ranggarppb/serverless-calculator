@@ -49,7 +49,7 @@ func (h *restHandler) HandleCalculation(w http.ResponseWriter, r *http.Request) 
 			return
 		}
 
-		h.handleSuccess(w, types.CalculatorResult{Result: result})
+		h.handleSuccess(w, types.CalculatorResult{Input: calculator.Input, Result: result})
 
 		return
 
