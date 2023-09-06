@@ -9,6 +9,23 @@ permissions:
 env:
   APPLICATION_NAME: 'serverless-calculator'
 jobs:
+
+  Test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.21'
+
+      - name: Build
+        run: go build -v ./...
+
+      - name: Test
+        run: go test -v ./...
+
   Deploy:
     runs-on: ubuntu-latest
     permissions:
