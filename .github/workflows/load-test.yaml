@@ -44,7 +44,7 @@ jobs:
       - name: Execute load tests
         uses: artilleryio/action-cli@v1
         with:
-          command: run "${{ github.workspace }}/load-test/load-test.yaml" --output "load-test-report.json"
+          command: run --output reports/report.json load-test/load-test.yaml
 
       - name: Upload result to artifact
         uses: actions/upload-artifact@v3
