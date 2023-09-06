@@ -15,5 +15,5 @@ type CalculatorHistory struct {
 
 type ICalculatorService interface {
 	GetCalculationHistory() []string
-	Calculate(input string) string
+	Calculate(input string) (string, error)
 }

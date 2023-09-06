@@ -49,7 +49,11 @@ func (h *restHandler) HandleCalculation(w http.ResponseWriter, r *http.Request) 
 			return
 		}
 
-		result := h.calculatorService.Calculate(calculator.Input)
+		result, err := h.calculatorService.Calculate(calculator.Input)
+
+		if err != nil {
+			return
+		}
 
 		calculatorResult := types.CalculatorResult{
 			Result: result,
