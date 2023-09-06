@@ -3,8 +3,14 @@ on:
   push:
     branches:
       - main
+    paths:
+      - '!.github/**'
+      - '!load-test/**'
+      - '!.pre-commit-config.yaml'
+      - '!commitlint.config.js'
+      - '!setup-pre-commit-hooks.sh'
 permissions:
-      id-token: write 
+      id-token: write
       contents: read
 env:
   APPLICATION_NAME: 'serverless-calculator'
@@ -34,7 +40,7 @@ jobs:
     steps:
       - name: Git clone the repository
         uses: actions/checkout@v3
-          
+
       - name: Authenticate to Google Cloud
         id: auth
         uses: google-github-actions/auth@v1
@@ -48,7 +54,7 @@ jobs:
         with:
           version: '>= 444.0.0'
 
-      - name: 'Use GCloud CLI'
+      - name: 'Deploy'
         run: >-
           gcloud functions deploy ${{ env.APPLICATION_NAME }}
           --gen2
