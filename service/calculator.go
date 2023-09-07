@@ -98,6 +98,9 @@ func (c *calculatorService) validateAndConstructCalculationOneInput(inputs []str
 	if err != nil {
 		return types.CalculationWithOneInput{}, types.ErrInvalidInputToBeOperated
 	}
+	if inputs[0] == utils.SQUAREROOT && num.LessThan(decimal.Zero) {
+		return types.CalculationWithOneInput{}, types.ErrInvalidInputToBeOperated
+	}
 	return types.CalculationWithOneInput{Input1: num, Operation: inputs[0]}, nil
 }
 

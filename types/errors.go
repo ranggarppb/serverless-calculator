@@ -50,5 +50,5 @@ var (
 	ErrInvalidMethod            = InvalidMethod("Please use GET and POST only for this endpoint")
 	ErrInvalidInput             = InvalidInput("Please specify input field")
 	ErrInvalidOperation         = InvalidInput("Operation is not allowed")
-	ErrInvalidInputToBeOperated = InvalidInput("Input can't be operated, please use numbers only")
+	ErrInvalidInputToBeOperated = InvalidInput("Input can't be operated")
 )
