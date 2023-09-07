@@ -18,4 +18,4 @@ Backend of serverless-calculator project (just a regular calculator, but serverl
 ## Features
 Currently the feature of latest production deployment:
 - Supporting single input calculation `abs`, `neg`, `sqr`, `sqrt`, ex: `neg 3`
-- Supporting two input calculation `add`, `substract`, `multiply`, `divide`
+- Supporting two input calculation `add`, `substract`, `multiply`, `divide`, ex: `1 add 3`
