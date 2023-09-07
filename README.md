@@ -1,6 +1,4 @@
 # serverless-calculator
-Experimenting with serverless
-# serverless-calculator
 
 ## Description
 
