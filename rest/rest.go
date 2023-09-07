@@ -19,8 +19,16 @@ func NewRestHandler(c types.ICalculatorService) *restHandler {
 }
 
 func (h *restHandler) HandleReadinessLiveness(w http.ResponseWriter, r *http.Request) {
-	if r.Method == http.MethodGet {
+	switch r.Method {
+	case http.MethodOptions:
+		h.handlePreflight(w)
+		return
+	case http.MethodGet:
 		fmt.Fprint(w, "Server OK")
+		return
+	default:
+		h.handlePreflight(w)
+		return
 	}
 }
 
@@ -60,14 +68,24 @@ func (h *restHandler) HandleCalculation(w http.ResponseWriter, r *http.Request) 
 	}
 }
 
+func (h *restHandler) handlePreflight(w http.ResponseWriter) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Methods", "POST")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+	w.Header().Set("Access-Control-Max-Age", "3600")
+	w.WriteHeader(http.StatusNoContent)
+}
+
 func (h *restHandler) handleSuccess(w http.ResponseWriter, result interface{}) {
 	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 
 	json.NewEncoder(w).Encode(result)
 }
 
 func (h *restHandler) handleError(w http.ResponseWriter, err types.WrappedError) {
 	w.WriteHeader(err.StatusCode())
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 
 	errorResponse := types.ErrorResponse{
 		ErrorCode:    err.ErrCode(),
