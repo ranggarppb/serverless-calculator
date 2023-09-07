@@ -145,6 +145,18 @@ func (s *calculatorTestSuite) TestDoCalculationWithOneInput() {
 			ExpectedErr: nil,
 		},
 		{
+			Desc:        "success-do-cube",
+			Input:       types.CalculationWithOneInput{Input1: input1Dec, Operation: "cube"},
+			ExpectedRes: input1Dec.Pow(decimal.NewFromInt(3)).String(),
+			ExpectedErr: nil,
+		},
+		{
+			Desc:        "success-do-cubert",
+			Input:       types.CalculationWithOneInput{Input1: decimal.NewFromInt(8), Operation: "cubert"},
+			ExpectedRes: "2",
+			ExpectedErr: nil,
+		},
+		{
 			Desc:        "failed-with-invalid-operation",
 			Input:       types.CalculationWithOneInput{Input1: input1Dec, Operation: "random"},
 			ExpectedRes: "",
