@@ -34,6 +34,7 @@ func (h *restHandler) HandleReadinessLiveness(w http.ResponseWriter, r *http.Req
 
 func (h *restHandler) HandleCalculation(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 
 	switch r.Method {
 	case http.MethodGet:
@@ -74,7 +75,6 @@ func (h *restHandler) HandleCalculation(w http.ResponseWriter, r *http.Request) 
 }
 
 func (h *restHandler) handlePreflight(w http.ResponseWriter) {
-	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Methods", "POST")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 	w.Header().Set("Access-Control-Max-Age", "3600")
@@ -83,14 +83,12 @@ func (h *restHandler) handlePreflight(w http.ResponseWriter) {
 
 func (h *restHandler) handleSuccess(w http.ResponseWriter, result interface{}) {
 	w.WriteHeader(http.StatusOK)
-	w.Header().Set("Access-Control-Allow-Origin", "*")
 
 	json.NewEncoder(w).Encode(result)
 }
 
 func (h *restHandler) handleError(w http.ResponseWriter, err types.WrappedError) {
 	w.WriteHeader(err.StatusCode())
-	w.Header().Set("Access-Control-Allow-Origin", "*")
 
 	errorResponse := types.ErrorResponse{
 		ErrorCode:    err.ErrCode(),
