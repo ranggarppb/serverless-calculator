@@ -95,6 +95,12 @@ func (s *calculatorTestSuite) TestValidateAndConstructCalculationOneInput() {
 			ExpectedRes: types.CalculationWithOneInput{},
 			ExpectedErr: types.ErrInvalidInputToBeOperated,
 		},
+		{
+			Desc:        "failed-validate-and-construct-with-when-input-is-negative-and-operation-is-sqrt",
+			Input:       []string{"sqrt", "-2"},
+			ExpectedRes: types.CalculationWithOneInput{},
+			ExpectedErr: types.ErrInvalidInputToBeOperated,
+		},
 	}
 	for _, tC := range testCases {
 		s.T().Run(tC.Desc, func(t *testing.T) {
@@ -142,6 +148,18 @@ func (s *calculatorTestSuite) TestDoCalculationWithOneInput() {
 			Desc:        "success-do-abs",
 			Input:       types.CalculationWithOneInput{Input1: input1Dec, Operation: "abs"},
 			ExpectedRes: input1Dec.Abs().String(),
+			ExpectedErr: nil,
+		},
+		{
+			Desc:        "success-do-cube",
+			Input:       types.CalculationWithOneInput{Input1: input1Dec, Operation: "cube"},
+			ExpectedRes: input1Dec.Pow(decimal.NewFromInt(3)).String(),
+			ExpectedErr: nil,
+		},
+		{
+			Desc:        "success-do-cubert",
+			Input:       types.CalculationWithOneInput{Input1: decimal.NewFromInt(8), Operation: "cubert"},
+			ExpectedRes: "2",
 			ExpectedErr: nil,
 		},
 		{

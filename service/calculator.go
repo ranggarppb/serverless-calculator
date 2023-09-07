@@ -1,6 +1,7 @@
 package calculator
 
 import (
+	"math"
 	"strings"
 
 	"github.com/ranggarppb/serverless-calculator/types"
@@ -97,6 +98,9 @@ func (c *calculatorService) validateAndConstructCalculationOneInput(inputs []str
 	if err != nil {
 		return types.CalculationWithOneInput{}, types.ErrInvalidInputToBeOperated
 	}
+	if inputs[0] == utils.SQUAREROOT && num.LessThan(decimal.Zero) {
+		return types.CalculationWithOneInput{}, types.ErrInvalidInputToBeOperated
+	}
 	return types.CalculationWithOneInput{Input1: num, Operation: inputs[0]}, nil
 }
 
@@ -111,6 +115,12 @@ func (c *calculatorService) doCalculationWithOneInput(input types.CalculationWit
 		return utils.Sqrt(input.Input1).String(), nil
 	case utils.ABSOLUTE:
 		return input.Input1.Abs().String(), nil
+	case utils.CUBE:
+		power := decimal.NewFromInt(3)
+		return input.Input1.Pow(power).String(), nil
+	case utils.CUBERT:
+		floatInput, _ := input.Input1.Float64()
+		return decimal.NewFromFloat(math.Cbrt(floatInput)).String(), nil
 	default:
 		return "", types.ErrInvalidOperation
 	}
