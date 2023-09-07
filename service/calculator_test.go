@@ -6,6 +6,7 @@ import (
 
 	calculator "github.com/ranggarppb/serverless-calculator/service"
 	"github.com/ranggarppb/serverless-calculator/types"
+	"github.com/ranggarppb/serverless-calculator/utils"
 	"github.com/shopspring/decimal"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
@@ -134,7 +135,7 @@ func (s *calculatorTestSuite) TestDoCalculationWithOneInput() {
 		{
 			Desc:        "success-do-squareroot",
 			Input:       types.CalculationWithOneInput{Input1: input1Dec, Operation: "sqrt"},
-			ExpectedRes: input1Dec.Pow(decimal.NewFromFloat(0.5)).String(),
+			ExpectedRes: utils.Sqrt(input1Dec).String(),
 			ExpectedErr: nil,
 		},
 		{
