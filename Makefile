@@ -3,8 +3,11 @@ ifndef $(GOPATH)
     export GOPATH
 endif
 
-local_engine:
-	export FUNCTION_TARGET=Calculate && go run $(shell pwd)/cmd/main.go
+local_function:
+	export FUNCTION_TARGET=Calculate && go run $(shell pwd)/app/main.go function
+
+console:
+	go run $(shell pwd)/app/main.go console
 
 mockery-gen:
 	@rm -rf ./mocks

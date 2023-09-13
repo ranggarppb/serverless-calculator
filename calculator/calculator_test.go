@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	calculator "github.com/ranggarppb/serverless-calculator/service"
+	"github.com/ranggarppb/serverless-calculator/calculator"
 	"github.com/ranggarppb/serverless-calculator/types"
 	"github.com/ranggarppb/serverless-calculator/utils"
 	"github.com/shopspring/decimal"

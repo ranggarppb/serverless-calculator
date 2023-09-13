@@ -1,6 +1,10 @@
 package types
 
-import "github.com/shopspring/decimal"
+import (
+	"net/http"
+
+	"github.com/shopspring/decimal"
+)
 
 type CalculatorInput struct {
 	Input string `json:"input"`
@@ -29,4 +33,9 @@ type CalculationWithMultipleInput struct {
 type ICalculatorService interface {
 	GetCalculationHistory() []string
 	Calculate(input string) (string, WrappedError)
+}
+
+type ICalculatorRestHandler interface {
+	HandleReadinessLiveness(http.ResponseWriter, *http.Request)
+	HandleCalculation(http.ResponseWriter, *http.Request)
 }

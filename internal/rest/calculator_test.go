@@ -6,8 +6,8 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/ranggarppb/serverless-calculator/internal/rest"
 	"github.com/ranggarppb/serverless-calculator/mocks"
-	"github.com/ranggarppb/serverless-calculator/rest"
 	"github.com/ranggarppb/serverless-calculator/types"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
@@ -50,7 +50,7 @@ func TestHandleCalculation(t *testing.T) {
 
 	for _, tC := range testCases {
 		t.Run(tC.Desc, func(t *testing.T) {
-			restHandler := rest.NewRestHandler(tC.CalculatorService)
+			restHandler := rest.NewCalculatorRestHandler(tC.CalculatorService)
 			req := httptest.NewRequest("POST", "/calculation", tC.ReqBody)
 			rec := httptest.NewRecorder()
 			restHandler.HandleCalculation(rec, req)
