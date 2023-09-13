@@ -3,13 +3,15 @@ package cmd
 import (
 	"log"
 
-	calculator "github.com/ranggarppb/serverless-calculator/service"
+	"github.com/ranggarppb/serverless-calculator/calculator"
+	"github.com/ranggarppb/serverless-calculator/internal/rest"
 	"github.com/ranggarppb/serverless-calculator/types"
 	"github.com/spf13/cobra"
 )
 
 var (
-	calculatorService types.ICalculatorService
+	calculatorService     types.ICalculatorService
+	calculatorRestHandler types.ICalculatorRestHandler
 )
 
 var (
@@ -32,4 +34,5 @@ func init() {
 
 func initApp() {
 	calculatorService = calculator.NewCalculatorService()
+	calculatorRestHandler = rest.NewCalculatorRestHandler(calculatorService)
 }

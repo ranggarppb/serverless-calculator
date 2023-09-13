@@ -12,7 +12,7 @@ type restHandler struct {
 	calculatorService types.ICalculatorService
 }
 
-func NewRestHandler(c types.ICalculatorService) *restHandler {
+func NewCalculatorRestHandler(c types.ICalculatorService) *restHandler {
 	return &restHandler{
 		calculatorService: c,
 	}
