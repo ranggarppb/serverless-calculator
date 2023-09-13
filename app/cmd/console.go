@@ -6,7 +6,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/ranggarppb/serverless-calculator/types"
+	"github.com/ranggarppb/serverless-calculator/errors"
 	"github.com/ranggarppb/serverless-calculator/utils"
 	"github.com/spf13/cobra"
 )
@@ -25,7 +25,7 @@ func startConsole(cmd *cobra.Command, args []string) {
 	var input string
 	var res string = "0"
 	var result string
-	var err types.WrappedError
+	var err errors.WrappedError
 	consoleReader := bufio.NewReader(os.Stdin)
 
 	fmt.Print("Enter operation\n")

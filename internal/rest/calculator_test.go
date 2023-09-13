@@ -6,9 +6,9 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/ranggarppb/serverless-calculator/errors"
 	"github.com/ranggarppb/serverless-calculator/internal/rest"
 	"github.com/ranggarppb/serverless-calculator/mocks"
-	"github.com/ranggarppb/serverless-calculator/types"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 )
@@ -37,7 +37,7 @@ func TestHandleCalculation(t *testing.T) {
 			Desc: "success-returning-error",
 			CalculatorService: func() *mocks.ICalculatorService {
 				mockSvc := new(mocks.ICalculatorService)
-				mockSvc.On("Calculate", mock.AnythingOfType("string")).Return("", types.ErrInvalidInput)
+				mockSvc.On("Calculate", mock.AnythingOfType("string")).Return("", errors.ErrInvalidInput)
 				return mockSvc
 			}(),
 			ReqBody: strings.NewReader(
