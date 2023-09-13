@@ -5,13 +5,12 @@ import (
 
 	"github.com/ranggarppb/serverless-calculator/calculator"
 	"github.com/ranggarppb/serverless-calculator/internal/rest"
-	"github.com/ranggarppb/serverless-calculator/types"
 	"github.com/spf13/cobra"
 )
 
 var (
-	calculatorService     types.ICalculatorService
-	calculatorRestHandler types.ICalculatorRestHandler
+	calculatorService     calculator.ICalculatorService
+	calculatorRestHandler rest.ICalculatorRestHandler
 )
 
 var (

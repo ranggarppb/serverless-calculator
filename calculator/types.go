@@ -1,8 +1,7 @@
-package types
+package calculator
 
 import (
-	"net/http"
-
+	"github.com/ranggarppb/serverless-calculator/errors"
 	"github.com/shopspring/decimal"
 )
 
@@ -32,10 +31,5 @@ type CalculationWithMultipleInput struct {
 
 type ICalculatorService interface {
 	GetCalculationHistory() []string
-	Calculate(input string) (string, WrappedError)
-}
-
-type ICalculatorRestHandler interface {
-	HandleReadinessLiveness(http.ResponseWriter, *http.Request)
-	HandleCalculation(http.ResponseWriter, *http.Request)
+	Calculate(input string) (string, errors.WrappedError)
 }

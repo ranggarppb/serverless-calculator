@@ -3,7 +3,7 @@
 package mocks
 
 import (
-	types "github.com/ranggarppb/serverless-calculator/types"
+	errors "github.com/ranggarppb/serverless-calculator/errors"
 	mock "github.com/stretchr/testify/mock"
 )
 
@@ -13,12 +13,12 @@ type ICalculatorService struct {
 }
 
 // Calculate provides a mock function with given fields: input
-func (_m *ICalculatorService) Calculate(input string) (string, types.WrappedError) {
+func (_m *ICalculatorService) Calculate(input string) (string, errors.WrappedError) {
 	ret := _m.Called(input)
 
 	var r0 string
-	var r1 types.WrappedError
-	if rf, ok := ret.Get(0).(func(string) (string, types.WrappedError)); ok {
+	var r1 errors.WrappedError
+	if rf, ok := ret.Get(0).(func(string) (string, errors.WrappedError)); ok {
 		return rf(input)
 	}
 	if rf, ok := ret.Get(0).(func(string) string); ok {
@@ -27,11 +27,11 @@ func (_m *ICalculatorService) Calculate(input string) (string, types.WrappedErro
 		r0 = ret.Get(0).(string)
 	}
 
-	if rf, ok := ret.Get(1).(func(string) types.WrappedError); ok {
+	if rf, ok := ret.Get(1).(func(string) errors.WrappedError); ok {
 		r1 = rf(input)
 	} else {
 		if ret.Get(1) != nil {
-			r1 = ret.Get(1).(types.WrappedError)
+			r1 = ret.Get(1).(errors.WrappedError)
 		}
 	}
 

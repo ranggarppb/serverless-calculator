@@ -5,14 +5,15 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/ranggarppb/serverless-calculator/types"
+	c "github.com/ranggarppb/serverless-calculator/calculator"
+	"github.com/ranggarppb/serverless-calculator/errors"
 )
 
 type restHandler struct {
-	calculatorService types.ICalculatorService
+	calculatorService c.ICalculatorService
 }
 
-func NewCalculatorRestHandler(c types.ICalculatorService) *restHandler {
+func NewCalculatorRestHandler(c c.ICalculatorService) *restHandler {
 	return &restHandler{
 		calculatorService: c,
 	}
@@ -40,14 +41,14 @@ func (h *restHandler) HandleCalculation(w http.ResponseWriter, r *http.Request) 
 	case http.MethodGet:
 		history := h.calculatorService.GetCalculationHistory()
 
-		h.handleSuccess(&w, types.CalculatorHistory{Result: history})
+		h.handleSuccess(&w, c.CalculatorHistory{Result: history})
 
 		return
 
 	case http.MethodPost:
-		var calculator types.CalculatorInput
+		var calculator c.CalculatorInput
 		if err := json.NewDecoder(r.Body).Decode(&calculator); err != nil || calculator.Input == "" {
-			h.handleError(&w, types.ErrInvalidInput)
+			h.handleError(&w, errors.ErrInvalidInput)
 			return
 		}
 
@@ -58,7 +59,7 @@ func (h *restHandler) HandleCalculation(w http.ResponseWriter, r *http.Request) 
 			return
 		}
 
-		h.handleSuccess(&w, types.CalculatorResult{Input: calculator.Input, Result: result})
+		h.handleSuccess(&w, c.CalculatorResult{Input: calculator.Input, Result: result})
 
 		return
 
@@ -68,7 +69,7 @@ func (h *restHandler) HandleCalculation(w http.ResponseWriter, r *http.Request) 
 		return
 
 	default:
-		h.handleError(&w, types.ErrInvalidMethod)
+		h.handleError(&w, errors.ErrInvalidMethod)
 
 		return
 	}
@@ -87,10 +88,10 @@ func (h *restHandler) handleSuccess(w *http.ResponseWriter, result interface{}) 
 	json.NewEncoder((*w)).Encode(result)
 }
 
-func (h *restHandler) handleError(w *http.ResponseWriter, err types.WrappedError) {
+func (h *restHandler) handleError(w *http.ResponseWriter, err errors.WrappedError) {
 	(*w).WriteHeader(err.StatusCode())
 
-	errorResponse := types.ErrorResponse{
+	errorResponse := errors.ErrorResponse{
 		ErrorCode:    err.ErrCode(),
 		ErrorMessage: err.Error(),
 	}
