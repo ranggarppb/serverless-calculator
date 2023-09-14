@@ -64,7 +64,7 @@ jobs:
         uses: thatisuday/go-cross-build@v1.1.0
         with:
             platforms: 'linux/amd64, darwin/amd64, windows/amd64, darwin/arm64'
-            package: 'demo'
+            package: ''
             name: 'serverless-calculator'
             compress: 'true'
             dest: 'bin'
