@@ -17,7 +17,7 @@ Serverless Function App:
 ## How To Run Executable
 For now executable can be run for **console app** and **function app**. Run it with `console` / `function` argument
 - To run console app, go to the executable folder and run command `./serverless-calculator console` and type the operation input
-- To run function app, go to the executable folder and run command `./bin/serverless-calculator function` and try to hit the cURL specified in [Features](#features)
+- To run function app, go to the executable folder and run command `./serverless-calculator function` and try to hit the cURL specified in [Features](#features)
 
 ## How To Compile
 If you dont find your distros in [Archived Executable](https://github.com/ranggarppb/serverless-calculator/suites/16157713024/artifacts/922573855), you can run command `make build` to build your own executable (already tested for darwin/arm64)
