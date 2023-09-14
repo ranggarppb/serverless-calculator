@@ -4,7 +4,7 @@
 
 Backend of serverless-calculator project (just a regular calculator, but serverless, because why not?)
 
-Archived Executable:
+[Archived Executable](https://github.com/ranggarppb/serverless-calculator/suites/16157713024/artifacts/922573855):
 - linux/amd64
 - darwin/amd64
 - windows/amd64
@@ -17,7 +17,7 @@ Serverless Function App:
 ## How To Run Executable
 For now executable can be run for **console app** and **function app**. Run it with `console` / `function` argument
 - To run console app, run command `./bin/serverless-calculator console` and type the operation input
-- To run function app, run command `./bin/serverless-calculator function` and try to hit the cURL specified in [Features](#-features)
+- To run function app, run command `./bin/serverless-calculator function` and try to hit the cURL specified in [Features](#features)
 
 ## How To Compile
 If you dont find your distros in `Archiaved Executable`, you can run command `make build`
