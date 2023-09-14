@@ -33,7 +33,13 @@ func startConsole(cmd *cobra.Command, args []string) {
 	consoleReader := bufio.NewReader(os.Stdin)
 	ctx := context.Background()
 
-	fmt.Print("Enter operation\n")
+	fmt.Print("List Commands\n")
+	fmt.Println("a. Exiting session: exit")
+	fmt.Println("b. Clear all result: cancel")
+	fmt.Println("c. Showing calculation history: history")
+	fmt.Println("d. Operation: ${single input operation} or ${multiple input operation} ${input} (see README for more detail)")
+	fmt.Println("")
+	fmt.Print("Enter command\n")
 
 Operation:
 	for {
