@@ -20,7 +20,7 @@ For now executable can be run for **console app** and **function app**. Run it w
 - To run function app, go to the executable folder and run command `./serverless-calculator function` and try to hit the cURL specified in [Features](#features)
 
 ## How To Compile
-If you dont find your distros in [Archived Executable](https://github.com/ranggarppb/serverless-calculator/suites/16157713024/artifacts/922573855), you can run command `make build` to build your own executable (already tested for darwin/arm64)
+If you dont find your OS architecture in [Archived Executable](https://github.com/ranggarppb/serverless-calculator/suites/16157713024/artifacts/922573855), you can run command `make build` to build your own executable (already tested for darwin/arm64)
 
 ## How To Test
 - Testing in console: run the command `make console`
