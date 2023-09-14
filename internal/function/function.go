@@ -4,10 +4,10 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/ranggarppb/serverless-calculator/internal/rest"
+	"github.com/ranggarppb/serverless-calculator/types/interfaces"
 )
 
-func CreateCalculateFunction(calculatorRestHandler rest.ICalculatorRestHandler) func(http.ResponseWriter, *http.Request) {
+func CreateCalculateFunction(calculatorRestHandler interfaces.ICalculatorRestHandler) func(http.ResponseWriter, *http.Request) {
 	ctx := context.Background()
 	return func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {

@@ -6,6 +6,7 @@ import (
 
 	"github.com/ranggarppb/serverless-calculator/calculator"
 	"github.com/ranggarppb/serverless-calculator/errors"
+	"github.com/ranggarppb/serverless-calculator/types/structs"
 	"github.com/ranggarppb/serverless-calculator/utils"
 	"github.com/shopspring/decimal"
 	"github.com/stretchr/testify/require"
@@ -31,13 +32,13 @@ func (s *calculatorTestSuite) TestGetCalculationType() {
 		{
 			Desc:        "success-get-type-with-normal-input-for-calculation-with-one-input",
 			Input:       []string{"sqr", "2"},
-			ExpectedRes: calculator.CalculationWithOneInput{},
+			ExpectedRes: structs.CalculationWithOneInput{},
 			ExpectedErr: nil,
 		},
 		{
 			Desc:        "success-get-type-with-normal-input-for-calculation-with-one-input",
 			Input:       []string{"1", "add", "2"},
-			ExpectedRes: calculator.CalculationWithMultipleInput{},
+			ExpectedRes: structs.CalculationWithMultipleInput{},
 			ExpectedErr: nil,
 		},
 		{
@@ -68,37 +69,37 @@ func (s *calculatorTestSuite) TestValidateAndConstructCalculationOneInput() {
 	testCases := []struct {
 		Desc        string
 		Input       []string
-		ExpectedRes calculator.CalculationWithOneInput
+		ExpectedRes structs.CalculationWithOneInput
 		ExpectedErr error
 	}{
 		{
 			Desc:        "success-validate-and-construct-calculation-with-one-input",
 			Input:       []string{"sqr", input},
-			ExpectedRes: calculator.CalculationWithOneInput{Input1: input1Dec, Operation: "sqr"},
+			ExpectedRes: structs.CalculationWithOneInput{Input1: input1Dec, Operation: "sqr"},
 			ExpectedErr: nil,
 		},
 		{
 			Desc:        "failed-validate-and-construct-with-input-length-not-equal-to-two",
 			Input:       []string{"sqr2"},
-			ExpectedRes: calculator.CalculationWithOneInput{},
+			ExpectedRes: structs.CalculationWithOneInput{},
 			ExpectedErr: errors.ErrInvalidOperation,
 		},
 		{
 			Desc:        "failed-validate-and-construct-with-not-listed-operation",
 			Input:       []string{"random", input},
-			ExpectedRes: calculator.CalculationWithOneInput{},
+			ExpectedRes: structs.CalculationWithOneInput{},
 			ExpectedErr: errors.ErrInvalidOperation,
 		},
 		{
 			Desc:        "failed-validate-and-construct-with-invalid-input-to-be-operated",
 			Input:       []string{"sqr", "random"},
-			ExpectedRes: calculator.CalculationWithOneInput{},
+			ExpectedRes: structs.CalculationWithOneInput{},
 			ExpectedErr: errors.ErrInvalidInputToBeOperated,
 		},
 		{
 			Desc:        "failed-validate-and-construct-with-when-input-is-negative-and-operation-is-sqrt",
 			Input:       []string{"sqrt", "-2"},
-			ExpectedRes: calculator.CalculationWithOneInput{},
+			ExpectedRes: structs.CalculationWithOneInput{},
 			ExpectedErr: errors.ErrInvalidInputToBeOperated,
 		},
 	}
@@ -122,49 +123,49 @@ func (s *calculatorTestSuite) TestDoCalculationWithOneInput() {
 	input1Dec, _ := decimal.NewFromString(input)
 	testCases := []struct {
 		Desc        string
-		Input       calculator.CalculationWithOneInput
+		Input       structs.CalculationWithOneInput
 		ExpectedRes string
 		ExpectedErr error
 	}{
 		{
 			Desc:        "success-do-square",
-			Input:       calculator.CalculationWithOneInput{Input1: input1Dec, Operation: "sqr"},
+			Input:       structs.CalculationWithOneInput{Input1: input1Dec, Operation: "sqr"},
 			ExpectedRes: input1Dec.Pow(decimal.NewFromInt(2)).String(),
 			ExpectedErr: nil,
 		},
 		{
 			Desc:        "success-do-negation",
-			Input:       calculator.CalculationWithOneInput{Input1: input1Dec, Operation: "neg"},
+			Input:       structs.CalculationWithOneInput{Input1: input1Dec, Operation: "neg"},
 			ExpectedRes: input1Dec.Neg().String(),
 			ExpectedErr: nil,
 		},
 		{
 			Desc:        "success-do-squareroot",
-			Input:       calculator.CalculationWithOneInput{Input1: input1Dec, Operation: "sqrt"},
+			Input:       structs.CalculationWithOneInput{Input1: input1Dec, Operation: "sqrt"},
 			ExpectedRes: utils.Sqrt(input1Dec).String(),
 			ExpectedErr: nil,
 		},
 		{
 			Desc:        "success-do-abs",
-			Input:       calculator.CalculationWithOneInput{Input1: input1Dec, Operation: "abs"},
+			Input:       structs.CalculationWithOneInput{Input1: input1Dec, Operation: "abs"},
 			ExpectedRes: input1Dec.Abs().String(),
 			ExpectedErr: nil,
 		},
 		{
 			Desc:        "success-do-cube",
-			Input:       calculator.CalculationWithOneInput{Input1: input1Dec, Operation: "cube"},
+			Input:       structs.CalculationWithOneInput{Input1: input1Dec, Operation: "cube"},
 			ExpectedRes: input1Dec.Pow(decimal.NewFromInt(3)).String(),
 			ExpectedErr: nil,
 		},
 		{
 			Desc:        "success-do-cubert",
-			Input:       calculator.CalculationWithOneInput{Input1: decimal.NewFromInt(8), Operation: "cubert"},
+			Input:       structs.CalculationWithOneInput{Input1: decimal.NewFromInt(8), Operation: "cubert"},
 			ExpectedRes: "2",
 			ExpectedErr: nil,
 		},
 		{
 			Desc:        "failed-with-invalid-operation",
-			Input:       calculator.CalculationWithOneInput{Input1: input1Dec, Operation: "random"},
+			Input:       structs.CalculationWithOneInput{Input1: input1Dec, Operation: "random"},
 			ExpectedRes: "",
 			ExpectedErr: errors.ErrInvalidOperation,
 		},
@@ -192,31 +193,31 @@ func (s *calculatorTestSuite) TestValidateAndConstructCalculationMultipleInput()
 	testCases := []struct {
 		Desc        string
 		Input       []string
-		ExpectedRes calculator.CalculationWithMultipleInput
+		ExpectedRes structs.CalculationWithMultipleInput
 		ExpectedErr error
 	}{
 		{
 			Desc:        "success-validate-and-construct-calculation-with-multiple-input",
 			Input:       []string{input1, "add", input2},
-			ExpectedRes: calculator.CalculationWithMultipleInput{Input1: input1Dec, Input2: input2Dec, Operation: "add"},
+			ExpectedRes: structs.CalculationWithMultipleInput{Input1: input1Dec, Input2: input2Dec, Operation: "add"},
 			ExpectedErr: nil,
 		},
 		{
 			Desc:        "failed-validate-and-construct-with-input-length-not-equal-to-two",
 			Input:       []string{"2", "add"},
-			ExpectedRes: calculator.CalculationWithMultipleInput{},
+			ExpectedRes: structs.CalculationWithMultipleInput{},
 			ExpectedErr: errors.ErrInvalidOperation,
 		},
 		{
 			Desc:        "failed-validate-and-construct-with-not-listed-operation",
 			Input:       []string{input1, "random", input2},
-			ExpectedRes: calculator.CalculationWithMultipleInput{},
+			ExpectedRes: structs.CalculationWithMultipleInput{},
 			ExpectedErr: errors.ErrInvalidOperation,
 		},
 		{
 			Desc:        "failed-validate-and-construct-with-invalid-input-to-be-operated",
 			Input:       []string{input1, "add", "random"},
-			ExpectedRes: calculator.CalculationWithMultipleInput{},
+			ExpectedRes: structs.CalculationWithMultipleInput{},
 			ExpectedErr: errors.ErrInvalidInputToBeOperated,
 		},
 	}
@@ -242,37 +243,37 @@ func (s *calculatorTestSuite) TestDoCalculationWithMultipleInput() {
 	input2Dec, _ := decimal.NewFromString(input2)
 	testCases := []struct {
 		Desc        string
-		Input       calculator.CalculationWithMultipleInput
+		Input       structs.CalculationWithMultipleInput
 		ExpectedRes string
 		ExpectedErr error
 	}{
 		{
 			Desc:        "success-do-addition",
-			Input:       calculator.CalculationWithMultipleInput{Input1: input1Dec, Input2: input2Dec, Operation: "add"},
+			Input:       structs.CalculationWithMultipleInput{Input1: input1Dec, Input2: input2Dec, Operation: "add"},
 			ExpectedRes: input1Dec.Add(input2Dec).String(),
 			ExpectedErr: nil,
 		},
 		{
 			Desc:        "success-do-negation",
-			Input:       calculator.CalculationWithMultipleInput{Input1: input1Dec, Input2: input2Dec, Operation: "substract"},
+			Input:       structs.CalculationWithMultipleInput{Input1: input1Dec, Input2: input2Dec, Operation: "substract"},
 			ExpectedRes: input1Dec.Sub(input2Dec).String(),
 			ExpectedErr: nil,
 		},
 		{
 			Desc:        "success-do-multiplicaiton",
-			Input:       calculator.CalculationWithMultipleInput{Input1: input1Dec, Input2: input2Dec, Operation: "multiply"},
+			Input:       structs.CalculationWithMultipleInput{Input1: input1Dec, Input2: input2Dec, Operation: "multiply"},
 			ExpectedRes: input1Dec.Mul(input2Dec).String(),
 			ExpectedErr: nil,
 		},
 		{
 			Desc:        "success-do-division",
-			Input:       calculator.CalculationWithMultipleInput{Input1: input1Dec, Input2: input2Dec, Operation: "divide"},
+			Input:       structs.CalculationWithMultipleInput{Input1: input1Dec, Input2: input2Dec, Operation: "divide"},
 			ExpectedRes: input1Dec.Div(input2Dec).String(),
 			ExpectedErr: nil,
 		},
 		{
 			Desc:        "failed-with-invalid-operation",
-			Input:       calculator.CalculationWithMultipleInput{Input1: input1Dec, Input2: input2Dec, Operation: "random"},
+			Input:       structs.CalculationWithMultipleInput{Input1: input1Dec, Input2: input2Dec, Operation: "random"},
 			ExpectedRes: "",
 			ExpectedErr: errors.ErrInvalidOperation,
 		},
@@ -306,13 +307,13 @@ func (s *calculatorTestSuite) TestParsingInput() {
 		{
 			Desc:        "success-parsing-with-normal-input-for-calculation-with-one-input",
 			Input:       fmt.Sprintf("sqr %v", input1),
-			ExpectedRes: calculator.CalculationWithOneInput{Input1: input1Dec, Operation: "sqr"},
+			ExpectedRes: structs.CalculationWithOneInput{Input1: input1Dec, Operation: "sqr"},
 			ExpectedErr: nil,
 		},
 		{
 			Desc:        "success-parsing-with-normal-input-for-calculation-with-multiple-input",
 			Input:       fmt.Sprintf("%v add %v", input1, input2),
-			ExpectedRes: calculator.CalculationWithMultipleInput{Input1: input1Dec, Input2: input2Dec, Operation: "add"},
+			ExpectedRes: structs.CalculationWithMultipleInput{Input1: input1Dec, Input2: input2Dec, Operation: "add"},
 			ExpectedErr: nil,
 		},
 		{

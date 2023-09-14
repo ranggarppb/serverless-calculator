@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/ranggarppb/serverless-calculator/errors"
+	"github.com/ranggarppb/serverless-calculator/types/structs"
 	"github.com/ranggarppb/serverless-calculator/utils"
 	"github.com/shopspring/decimal"
 )
@@ -16,34 +17,34 @@ func NewCalculatorService() *calculatorService {
 	return &calculatorService{}
 }
 
-func (c *calculatorService) GetCalculationHistory(ctx context.Context) CalculationHistory {
+func (c *calculatorService) GetCalculationHistory(ctx context.Context) structs.CalculationHistory {
 
-	return CalculationHistory{}
+	return structs.CalculationHistory{}
 }
 
-func (c *calculatorService) Calculate(ctx context.Context, input string) (CalculatorResult, errors.WrappedError) {
+func (c *calculatorService) Calculate(ctx context.Context, input string) (structs.CalculationResult, errors.WrappedError) {
 
 	parsedInput, err := c.parseInput(input)
 
 	if err != nil {
-		return CalculatorResult{}, err
+		return structs.CalculationResult{}, err
 	}
 
 	switch inputType := parsedInput.(type) {
-	case CalculationWithOneInput:
+	case structs.CalculationWithOneInput:
 		result, err := c.doCalculationWithOneInput(inputType)
 		if err != nil {
-			return CalculatorResult{}, err
+			return structs.CalculationResult{}, err
 		}
-		return CalculatorResult{Input: input, Result: result}, nil
-	case CalculationWithMultipleInput:
+		return structs.CalculationResult{Input: input, Result: result}, nil
+	case structs.CalculationWithMultipleInput:
 		result, err := c.doCalculationWithMultipleInput(inputType)
 		if err != nil {
-			return CalculatorResult{}, err
+			return structs.CalculationResult{}, err
 		}
-		return CalculatorResult{Input: input, Result: result}, nil
+		return structs.CalculationResult{Input: input, Result: result}, nil
 	default:
-		return CalculatorResult{}, errors.ErrInvalidOperation
+		return structs.CalculationResult{}, errors.ErrInvalidOperation
 	}
 }
 
@@ -57,19 +58,19 @@ func (c *calculatorService) parseInput(input string) (interface{}, errors.Wrappe
 	}
 
 	switch calculationType.(type) {
-	case CalculationWithOneInput:
+	case structs.CalculationWithOneInput:
 		res, err := c.validateAndConstructCalculationOneInput(inputs)
 
 		if err != nil {
-			return CalculationWithOneInput{}, err
+			return structs.CalculationWithOneInput{}, err
 		}
 
 		return res, nil
-	case CalculationWithMultipleInput:
+	case structs.CalculationWithMultipleInput:
 		res, err := c.validateAndConstructCalculationMultipleInput(inputs)
 
 		if err != nil {
-			return CalculationWithMultipleInput{}, err
+			return structs.CalculationWithMultipleInput{}, err
 		}
 
 		return res, nil
@@ -87,29 +88,29 @@ func (c *calculatorService) getCalculationType(inputs []string) (interface{}, er
 	_, err := decimal.NewFromString(inputs[0])
 
 	if err != nil {
-		return CalculationWithOneInput{}, nil
+		return structs.CalculationWithOneInput{}, nil
 	} else {
-		return CalculationWithMultipleInput{}, nil
+		return structs.CalculationWithMultipleInput{}, nil
 	}
 }
 
-func (c *calculatorService) validateAndConstructCalculationOneInput(inputs []string) (CalculationWithOneInput, errors.WrappedError) {
+func (c *calculatorService) validateAndConstructCalculationOneInput(inputs []string) (structs.CalculationWithOneInput, errors.WrappedError) {
 	if len(inputs) != 2 || !(utils.ContainString(utils.OPERATIONS_WITH_ONE_INPUTS, inputs[0])) {
-		return CalculationWithOneInput{}, errors.ErrInvalidOperation
+		return structs.CalculationWithOneInput{}, errors.ErrInvalidOperation
 	}
 
 	num, err := decimal.NewFromString(inputs[1])
 
 	if err != nil {
-		return CalculationWithOneInput{}, errors.ErrInvalidInputToBeOperated
+		return structs.CalculationWithOneInput{}, errors.ErrInvalidInputToBeOperated
 	}
 	if inputs[0] == utils.SQUAREROOT && num.LessThan(decimal.Zero) {
-		return CalculationWithOneInput{}, errors.ErrInvalidInputToBeOperated
+		return structs.CalculationWithOneInput{}, errors.ErrInvalidInputToBeOperated
 	}
-	return CalculationWithOneInput{Input1: num, Operation: inputs[0]}, nil
+	return structs.CalculationWithOneInput{Input1: num, Operation: inputs[0]}, nil
 }
 
-func (c *calculatorService) doCalculationWithOneInput(input CalculationWithOneInput) (string, errors.WrappedError) {
+func (c *calculatorService) doCalculationWithOneInput(input structs.CalculationWithOneInput) (string, errors.WrappedError) {
 	switch input.Operation {
 	case utils.NEGATION:
 		return input.Input1.Neg().String(), nil
@@ -131,21 +132,21 @@ func (c *calculatorService) doCalculationWithOneInput(input CalculationWithOneIn
 	}
 }
 
-func (c *calculatorService) validateAndConstructCalculationMultipleInput(inputs []string) (CalculationWithMultipleInput, errors.WrappedError) {
+func (c *calculatorService) validateAndConstructCalculationMultipleInput(inputs []string) (structs.CalculationWithMultipleInput, errors.WrappedError) {
 	if len(inputs) != 3 || !(utils.ContainString(utils.OPERATIONS_WITH_TWO_INPUTS, inputs[1])) {
-		return CalculationWithMultipleInput{}, errors.ErrInvalidOperation
+		return structs.CalculationWithMultipleInput{}, errors.ErrInvalidOperation
 	}
 
 	num1, err1 := decimal.NewFromString(inputs[0])
 	num2, err2 := decimal.NewFromString(inputs[2])
 
 	if !(err1 == nil && err2 == nil) {
-		return CalculationWithMultipleInput{}, errors.ErrInvalidInputToBeOperated
+		return structs.CalculationWithMultipleInput{}, errors.ErrInvalidInputToBeOperated
 	}
-	return CalculationWithMultipleInput{Input1: num1, Input2: num2, Operation: inputs[1]}, nil
+	return structs.CalculationWithMultipleInput{Input1: num1, Input2: num2, Operation: inputs[1]}, nil
 }
 
-func (c *calculatorService) doCalculationWithMultipleInput(input CalculationWithMultipleInput) (string, errors.WrappedError) {
+func (c *calculatorService) doCalculationWithMultipleInput(input structs.CalculationWithMultipleInput) (string, errors.WrappedError) {
 	switch input.Operation {
 	case utils.ADDITION:
 		return input.Input1.Add(input.Input2).String(), nil

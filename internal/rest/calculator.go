@@ -6,15 +6,16 @@ import (
 	"fmt"
 	"net/http"
 
-	c "github.com/ranggarppb/serverless-calculator/calculator"
 	"github.com/ranggarppb/serverless-calculator/errors"
+	"github.com/ranggarppb/serverless-calculator/types/interfaces"
+	"github.com/ranggarppb/serverless-calculator/types/structs"
 )
 
 type restHandler struct {
-	calculatorService c.ICalculatorService
+	calculatorService interfaces.ICalculatorService
 }
 
-func NewCalculatorRestHandler(c c.ICalculatorService) *restHandler {
+func NewCalculatorRestHandler(c interfaces.ICalculatorService) *restHandler {
 	return &restHandler{
 		calculatorService: c,
 	}
@@ -47,7 +48,7 @@ func (h *restHandler) HandleCalculation(ctx context.Context, w http.ResponseWrit
 		return
 
 	case http.MethodPost:
-		var calculator c.CalculatorInput
+		var calculator structs.CalculationInput
 		if err := json.NewDecoder(r.Body).Decode(&calculator); err != nil || calculator.Input == "" {
 			h.handleError(&w, errors.ErrInvalidInput)
 			return
