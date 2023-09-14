@@ -63,7 +63,7 @@ jobs:
       - name: Generate build files
         uses: thatisuday/go-cross-build@v1.1.0
         with:
-            platforms: 'linux/amd64, darwin/amd64, windows/amd64, darwin/arm64'
+            platforms: 'linux/amd64, darwin/amd64, windows/amd64'
             package: 'app/main.go'
             name: 'serverless-calculator'
             compress: 'true'

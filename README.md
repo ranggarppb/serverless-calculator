@@ -4,6 +4,12 @@
 
 Backend of serverless-calculator project (just a regular calculator, but serverless, because why not?)
 
+Archived Executable:
+- linux/amd64
+- darwin/amd64
+- windows/amd64
+
+Serverless Function App:
 - Backend server (Google Cloud Function): https://asia-southeast2-serverless-calculator.cloudfunctions.net/serverless-calculator/calculation
 - Frontend server (Firebase Hosting): https://serverless-calculator.web.app/
 - Swagger documentation: https://app.swaggerhub.com/apis/RANGGAPUTRAPERTAMAPP/serverless-calculator/1.0.0
@@ -14,7 +20,7 @@ For now executable can be run for **console app** and **function app**. Run it w
 - To run function app, run command `./bin/serverless-calculator function` and try to hit the cURL specified in [Features](#-features)
 
 ## How To Compile
-Run command `GOFLAGS=-mod=mod go build -o bin/serverless-calculator app/main.go` or every merge to `main` branch will compile the code and save the executable to artifact
+If you dont find your distros in `Archiaved Executable`, you can run command `make build`
 
 ## How To Test
 - Testing in console: run the command `make console`
