@@ -37,9 +37,9 @@ func startConsole(cmd *cobra.Command, args []string) {
 	fmt.Println("a. Exiting session: exit")
 	fmt.Println("b. Clear all result: cancel")
 	fmt.Println("c. Showing calculation history: history")
-	fmt.Println("d. Operation: ${single input operation} or ${multiple input operation} ${input} (see README for more detail)")
+	fmt.Println("d. Operation: ${single input operation} or ${multiple input operation} ${input} (see README Features section for more detail)")
 	fmt.Println("")
-	fmt.Print("Enter command\n")
+	fmt.Print("Enter command (start from 0)\n")
 
 Operation:
 	for {
