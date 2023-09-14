@@ -16,8 +16,8 @@ type CalculatorResult struct {
 	Result string `json:"result"`
 }
 
-type CalculatorHistory struct {
-	Result []string `json:"result"`
+type CalculationHistory struct {
+	History []CalculatorResult `json:"result"`
 }
 
 type CalculationWithOneInput struct {
@@ -32,6 +32,6 @@ type CalculationWithMultipleInput struct {
 }
 
 type ICalculatorService interface {
-	GetCalculationHistory(context.Context) []string
-	Calculate(context.Context, string) (string, errors.WrappedError)
+	GetCalculationHistory(context.Context) CalculationHistory
+	Calculate(context.Context, string) (CalculatorResult, errors.WrappedError)
 }

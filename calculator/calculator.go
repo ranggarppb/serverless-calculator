@@ -16,30 +16,34 @@ func NewCalculatorService() *calculatorService {
 	return &calculatorService{}
 }
 
-func (c *calculatorService) GetCalculationHistory(ctx context.Context) []string {
-	result := []string{
-		"Hello World!",
-		"hello World!",
-	}
+func (c *calculatorService) GetCalculationHistory(ctx context.Context) CalculationHistory {
 
-	return result
+	return CalculationHistory{}
 }
 
-func (c *calculatorService) Calculate(ctx context.Context, input string) (string, errors.WrappedError) {
+func (c *calculatorService) Calculate(ctx context.Context, input string) (CalculatorResult, errors.WrappedError) {
 
 	parsedInput, err := c.parseInput(input)
 
 	if err != nil {
-		return "", err
+		return CalculatorResult{}, err
 	}
 
-	switch input := parsedInput.(type) {
+	switch inputType := parsedInput.(type) {
 	case CalculationWithOneInput:
-		return c.doCalculationWithOneInput(input)
+		result, err := c.doCalculationWithOneInput(inputType)
+		if err != nil {
+			return CalculatorResult{}, err
+		}
+		return CalculatorResult{Input: input, Result: result}, nil
 	case CalculationWithMultipleInput:
-		return c.doCalculationWithMultipleInput(input)
+		result, err := c.doCalculationWithMultipleInput(inputType)
+		if err != nil {
+			return CalculatorResult{}, err
+		}
+		return CalculatorResult{Input: input, Result: result}, nil
 	default:
-		return "", errors.ErrInvalidOperation
+		return CalculatorResult{}, errors.ErrInvalidOperation
 	}
 }
 

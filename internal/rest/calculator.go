@@ -42,7 +42,7 @@ func (h *restHandler) HandleCalculation(ctx context.Context, w http.ResponseWrit
 	case http.MethodGet:
 		history := h.calculatorService.GetCalculationHistory(ctx)
 
-		h.handleSuccess(&w, c.CalculatorHistory{Result: history})
+		h.handleSuccess(&w, history)
 
 		return
 
@@ -60,7 +60,7 @@ func (h *restHandler) HandleCalculation(ctx context.Context, w http.ResponseWrit
 			return
 		}
 
-		h.handleSuccess(&w, c.CalculatorResult{Input: calculator.Input, Result: result})
+		h.handleSuccess(&w, result)
 
 		return
 

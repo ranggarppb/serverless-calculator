@@ -5,7 +5,10 @@ package mocks
 import (
 	context "context"
 
+	calculator "github.com/ranggarppb/serverless-calculator/calculator"
+
 	errors "github.com/ranggarppb/serverless-calculator/errors"
+
 	mock "github.com/stretchr/testify/mock"
 )
 
@@ -15,18 +18,18 @@ type ICalculatorService struct {
 }
 
 // Calculate provides a mock function with given fields: _a0, _a1
-func (_m *ICalculatorService) Calculate(_a0 context.Context, _a1 string) (string, errors.WrappedError) {
+func (_m *ICalculatorService) Calculate(_a0 context.Context, _a1 string) (calculator.CalculatorResult, errors.WrappedError) {
 	ret := _m.Called(_a0, _a1)
 
-	var r0 string
+	var r0 calculator.CalculatorResult
 	var r1 errors.WrappedError
-	if rf, ok := ret.Get(0).(func(context.Context, string) (string, errors.WrappedError)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, string) (calculator.CalculatorResult, errors.WrappedError)); ok {
 		return rf(_a0, _a1)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, string) string); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, string) calculator.CalculatorResult); ok {
 		r0 = rf(_a0, _a1)
 	} else {
-		r0 = ret.Get(0).(string)
+		r0 = ret.Get(0).(calculator.CalculatorResult)
 	}
 
 	if rf, ok := ret.Get(1).(func(context.Context, string) errors.WrappedError); ok {
@@ -41,16 +44,14 @@ func (_m *ICalculatorService) Calculate(_a0 context.Context, _a1 string) (string
 }
 
 // GetCalculationHistory provides a mock function with given fields: _a0
-func (_m *ICalculatorService) GetCalculationHistory(_a0 context.Context) []string {
+func (_m *ICalculatorService) GetCalculationHistory(_a0 context.Context) calculator.CalculationHistory {
 	ret := _m.Called(_a0)
 
-	var r0 []string
-	if rf, ok := ret.Get(0).(func(context.Context) []string); ok {
+	var r0 calculator.CalculationHistory
+	if rf, ok := ret.Get(0).(func(context.Context) calculator.CalculationHistory); ok {
 		r0 = rf(_a0)
 	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]string)
-		}
+		r0 = ret.Get(0).(calculator.CalculationHistory)
 	}
 
 	return r0

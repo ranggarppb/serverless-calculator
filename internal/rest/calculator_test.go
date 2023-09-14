@@ -7,6 +7,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/ranggarppb/serverless-calculator/calculator"
 	"github.com/ranggarppb/serverless-calculator/errors"
 	"github.com/ranggarppb/serverless-calculator/internal/rest"
 	"github.com/ranggarppb/serverless-calculator/mocks"
@@ -27,7 +28,7 @@ func TestHandleCalculation(t *testing.T) {
 			Ctx:  context.TODO(),
 			CalculatorService: func() *mocks.ICalculatorService {
 				mockSvc := new(mocks.ICalculatorService)
-				mockSvc.On("Calculate", mock.Anything, mock.AnythingOfType("string")).Return("4", nil)
+				mockSvc.On("Calculate", mock.Anything, mock.AnythingOfType("string")).Return(calculator.CalculatorResult{Input: "1 add 3", Result: "4"}, nil)
 				return mockSvc
 			}(),
 			ReqBody: strings.NewReader(
