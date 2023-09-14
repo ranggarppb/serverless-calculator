@@ -118,7 +118,8 @@ func (c *calculatorService) doCalculationWithOneInput(input structs.CalculationW
 		power := decimal.NewFromInt(2)
 		return input.Input1.Pow(power).String(), nil
 	case utils.SQUAREROOT:
-		return utils.Sqrt(input.Input1).String(), nil
+		floatInput, _ := input.Input1.Float64()
+		return decimal.NewFromFloat(math.Sqrt(floatInput)).String(), nil
 	case utils.ABSOLUTE:
 		return input.Input1.Abs().String(), nil
 	case utils.CUBE:

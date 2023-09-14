@@ -2,12 +2,12 @@ package calculator_test
 
 import (
 	"fmt"
+	"math"
 	"testing"
 
 	"github.com/ranggarppb/serverless-calculator/calculator"
 	"github.com/ranggarppb/serverless-calculator/errors"
 	"github.com/ranggarppb/serverless-calculator/types/structs"
-	"github.com/ranggarppb/serverless-calculator/utils"
 	"github.com/shopspring/decimal"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
@@ -121,6 +121,7 @@ func (s *calculatorTestSuite) TestValidateAndConstructCalculationOneInput() {
 func (s *calculatorTestSuite) TestDoCalculationWithOneInput() {
 	input := "2"
 	input1Dec, _ := decimal.NewFromString(input)
+	input1Float64, _ := input1Dec.Float64()
 	testCases := []struct {
 		Desc        string
 		Input       structs.CalculationWithOneInput
@@ -142,7 +143,7 @@ func (s *calculatorTestSuite) TestDoCalculationWithOneInput() {
 		{
 			Desc:        "success-do-squareroot",
 			Input:       structs.CalculationWithOneInput{Input1: input1Dec, Operation: "sqrt"},
-			ExpectedRes: utils.Sqrt(input1Dec).String(),
+			ExpectedRes: decimal.NewFromFloat(math.Sqrt(input1Float64)).String(),
 			ExpectedErr: nil,
 		},
 		{
