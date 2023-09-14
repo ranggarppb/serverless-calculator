@@ -11,6 +11,7 @@ const (
 	ABSOLUTE        = "abs"
 	CUBE            = "cube"
 	CUBERT          = "cubert"
+	REPEAT          = "repeat"
 	COMMAND_EXIT    = "exit"
 	COMMAND_CANCEL  = "cancel"
 	COMMAND_HISTORY = "history"

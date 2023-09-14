@@ -35,18 +35,20 @@ func startConsole(cmd *cobra.Command, args []string) {
 
 	fmt.Print("Enter operation\n")
 
+Operation:
 	for {
 		input, _ = consoleReader.ReadString('\n')
 		trimmedInput := strings.TrimSuffix(input, "\n")
 
-		if trimmedInput == utils.COMMAND_EXIT {
-			break
-		} else if trimmedInput == utils.COMMAND_CANCEL {
+		switch trimmedInput {
+		case utils.COMMAND_EXIT:
+			break Operation
+		case utils.COMMAND_CANCEL:
 			res = "0"
 			fmt.Println(res)
-		} else if trimmedInput == utils.COMMAND_HISTORY {
+		case utils.COMMAND_HISTORY:
 			fmt.Println(calculationHistory.History)
-		} else {
+		default:
 			calculationResult, err = doOperation(ctx, trimmedInput, res, calculationHistory)
 
 			if err != nil {
@@ -65,7 +67,7 @@ func doOperation(ctx context.Context, trimmedInput string, initial string, histo
 	switch {
 	case utils.ContainString(utils.OPERATIONS_WITH_ONE_INPUTS, inputs[0]):
 		return calculatorService.Calculate(ctx, fmt.Sprintf("%s %s", trimmedInput, initial))
-	case inputs[0] == "repeat":
+	case inputs[0] == utils.REPEAT:
 		repeatInput, err := validateRepeatOperation(inputs, history)
 
 		if err != nil {
