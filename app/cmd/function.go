@@ -27,7 +27,9 @@ func function(cmd *cobra.Command, args []string) {
 		port = envPort
 	}
 
-	funcframework.RegisterHTTPFunctionContext(context.TODO(), "./", f.CreateCalculateFunction(calculatorRestHandler))
+	os.Setenv("FUNCTION_TARGET", "Calculate")
+
+	funcframework.RegisterHTTPFunctionContext(context.TODO(), "/", f.CreateCalculateFunction(calculatorRestHandler))
 
 	if err := funcframework.Start(port); err != nil {
 		log.Fatalf("funcframework.Start: %v\n", err)
