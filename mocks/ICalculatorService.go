@@ -3,6 +3,8 @@
 package mocks
 
 import (
+	context "context"
+
 	errors "github.com/ranggarppb/serverless-calculator/errors"
 	mock "github.com/stretchr/testify/mock"
 )
@@ -12,23 +14,23 @@ type ICalculatorService struct {
 	mock.Mock
 }
 
-// Calculate provides a mock function with given fields: input
-func (_m *ICalculatorService) Calculate(input string) (string, errors.WrappedError) {
-	ret := _m.Called(input)
+// Calculate provides a mock function with given fields: _a0, _a1
+func (_m *ICalculatorService) Calculate(_a0 context.Context, _a1 string) (string, errors.WrappedError) {
+	ret := _m.Called(_a0, _a1)
 
 	var r0 string
 	var r1 errors.WrappedError
-	if rf, ok := ret.Get(0).(func(string) (string, errors.WrappedError)); ok {
-		return rf(input)
+	if rf, ok := ret.Get(0).(func(context.Context, string) (string, errors.WrappedError)); ok {
+		return rf(_a0, _a1)
 	}
-	if rf, ok := ret.Get(0).(func(string) string); ok {
-		r0 = rf(input)
+	if rf, ok := ret.Get(0).(func(context.Context, string) string); ok {
+		r0 = rf(_a0, _a1)
 	} else {
 		r0 = ret.Get(0).(string)
 	}
 
-	if rf, ok := ret.Get(1).(func(string) errors.WrappedError); ok {
-		r1 = rf(input)
+	if rf, ok := ret.Get(1).(func(context.Context, string) errors.WrappedError); ok {
+		r1 = rf(_a0, _a1)
 	} else {
 		if ret.Get(1) != nil {
 			r1 = ret.Get(1).(errors.WrappedError)
@@ -38,13 +40,13 @@ func (_m *ICalculatorService) Calculate(input string) (string, errors.WrappedErr
 	return r0, r1
 }
 
-// GetCalculationHistory provides a mock function with given fields:
-func (_m *ICalculatorService) GetCalculationHistory() []string {
-	ret := _m.Called()
+// GetCalculationHistory provides a mock function with given fields: _a0
+func (_m *ICalculatorService) GetCalculationHistory(_a0 context.Context) []string {
+	ret := _m.Called(_a0)
 
 	var r0 []string
-	if rf, ok := ret.Get(0).(func() []string); ok {
-		r0 = rf()
+	if rf, ok := ret.Get(0).(func(context.Context) []string); ok {
+		r0 = rf(_a0)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]string)

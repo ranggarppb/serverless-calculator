@@ -1,6 +1,8 @@
 package calculator
 
 import (
+	"context"
+
 	"github.com/ranggarppb/serverless-calculator/errors"
 	"github.com/shopspring/decimal"
 )
@@ -30,6 +32,6 @@ type CalculationWithMultipleInput struct {
 }
 
 type ICalculatorService interface {
-	GetCalculationHistory() []string
-	Calculate(input string) (string, errors.WrappedError)
+	GetCalculationHistory(context.Context) []string
+	Calculate(context.Context, string) (string, errors.WrappedError)
 }

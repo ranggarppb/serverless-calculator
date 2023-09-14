@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"bufio"
+	"context"
 	"fmt"
 	"os"
 	"strings"
@@ -27,6 +28,7 @@ func startConsole(cmd *cobra.Command, args []string) {
 	var result string
 	var err errors.WrappedError
 	consoleReader := bufio.NewReader(os.Stdin)
+	ctx := context.Background()
 
 	fmt.Print("Enter operation\n")
 
@@ -41,9 +43,9 @@ func startConsole(cmd *cobra.Command, args []string) {
 			fmt.Println(res)
 		} else {
 			if inputs := strings.Split(trimmedInput, " "); utils.ContainString(utils.OPERATIONS_WITH_ONE_INPUTS, inputs[0]) {
-				result, err = calculatorService.Calculate(fmt.Sprintf("%s %s", trimmedInput, res))
+				result, err = calculatorService.Calculate(ctx, fmt.Sprintf("%s %s", trimmedInput, res))
 			} else {
-				result, err = calculatorService.Calculate(fmt.Sprintf("%s %s", res, trimmedInput))
+				result, err = calculatorService.Calculate(ctx, fmt.Sprintf("%s %s", res, trimmedInput))
 			}
 			if err != nil {
 				fmt.Printf("Get error %s, %s\n", err.ErrCode(), err.Error())

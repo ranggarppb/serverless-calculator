@@ -1,6 +1,7 @@
 package rest
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -19,7 +20,7 @@ func NewCalculatorRestHandler(c c.ICalculatorService) *restHandler {
 	}
 }
 
-func (h *restHandler) HandleReadinessLiveness(w http.ResponseWriter, r *http.Request) {
+func (h *restHandler) HandleReadinessLiveness(ctx context.Context, w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodOptions:
 		h.handlePreflight(&w)
@@ -33,13 +34,13 @@ func (h *restHandler) HandleReadinessLiveness(w http.ResponseWriter, r *http.Req
 	}
 }
 
-func (h *restHandler) HandleCalculation(w http.ResponseWriter, r *http.Request) {
+func (h *restHandler) HandleCalculation(ctx context.Context, w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 
 	switch r.Method {
 	case http.MethodGet:
-		history := h.calculatorService.GetCalculationHistory()
+		history := h.calculatorService.GetCalculationHistory(ctx)
 
 		h.handleSuccess(&w, c.CalculatorHistory{Result: history})
 
@@ -52,7 +53,7 @@ func (h *restHandler) HandleCalculation(w http.ResponseWriter, r *http.Request) 
 			return
 		}
 
-		result, err := h.calculatorService.Calculate(calculator.Input)
+		result, err := h.calculatorService.Calculate(ctx, calculator.Input)
 
 		if err != nil {
 			h.handleError(&w, err)

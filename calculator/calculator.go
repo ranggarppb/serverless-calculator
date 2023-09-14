@@ -1,6 +1,7 @@
 package calculator
 
 import (
+	"context"
 	"math"
 	"strings"
 
@@ -15,7 +16,7 @@ func NewCalculatorService() *calculatorService {
 	return &calculatorService{}
 }
 
-func (c *calculatorService) GetCalculationHistory() []string {
+func (c *calculatorService) GetCalculationHistory(ctx context.Context) []string {
 	result := []string{
 		"Hello World!",
 		"hello World!",
@@ -24,7 +25,7 @@ func (c *calculatorService) GetCalculationHistory() []string {
 	return result
 }
 
-func (c *calculatorService) Calculate(input string) (string, errors.WrappedError) {
+func (c *calculatorService) Calculate(ctx context.Context, input string) (string, errors.WrappedError) {
 
 	parsedInput, err := c.parseInput(input)
 

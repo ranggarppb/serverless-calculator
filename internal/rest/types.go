@@ -1,8 +1,11 @@
 package rest
 
-import "net/http"
+import (
+	"context"
+	"net/http"
+)
 
 type ICalculatorRestHandler interface {
-	HandleReadinessLiveness(http.ResponseWriter, *http.Request)
-	HandleCalculation(http.ResponseWriter, *http.Request)
+	HandleReadinessLiveness(context.Context, http.ResponseWriter, *http.Request)
+	HandleCalculation(context.Context, http.ResponseWriter, *http.Request)
 }
