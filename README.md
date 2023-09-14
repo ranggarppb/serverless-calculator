@@ -8,6 +8,10 @@ Backend of serverless-calculator project (just a regular calculator, but serverl
 - Frontend server (Firebase Hosting): https://serverless-calculator.web.app/
 - Swagger documentation: https://app.swaggerhub.com/apis/RANGGAPUTRAPERTAMAPP/serverless-calculator/1.0.0
 
+## How To Test
+- Testing in console: run the command `make console`
+- Testing with local HTTP function `make local_function`
+
 ## Collaborating
 
 - Fork and develop in your local computer, dont forget to run `. setup-pre-commit-hooks.sh` to setup pre-commit-hooks
@@ -17,5 +21,9 @@ Backend of serverless-calculator project (just a regular calculator, but serverl
 
 ## Features
 Currently the feature of latest production deployment:
-- Supporting single input calculation `abs`, `neg`, `sqr`, `sqrt`, ex: `neg 3`
+- Supporting single input calculation `abs`, `neg`, `sqr`, `sqrt`, `cube`, `cubert`, ex: `neg 3`
 - Supporting two input calculation `add`, `substract`, `multiply`, `divide`
+
+In Progress:
+- Multiple input calculation using stack data structure
+- Saving calculation history in Firestore

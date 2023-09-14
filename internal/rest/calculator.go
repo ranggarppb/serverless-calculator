@@ -1,25 +1,27 @@
 package rest
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
 
-	c "github.com/ranggarppb/serverless-calculator/calculator"
 	"github.com/ranggarppb/serverless-calculator/errors"
+	"github.com/ranggarppb/serverless-calculator/types/interfaces"
+	"github.com/ranggarppb/serverless-calculator/types/structs"
 )
 
 type restHandler struct {
-	calculatorService c.ICalculatorService
+	calculatorService interfaces.ICalculatorService
 }
 
-func NewCalculatorRestHandler(c c.ICalculatorService) *restHandler {
+func NewCalculatorRestHandler(c interfaces.ICalculatorService) *restHandler {
 	return &restHandler{
 		calculatorService: c,
 	}
 }
 
-func (h *restHandler) HandleReadinessLiveness(w http.ResponseWriter, r *http.Request) {
+func (h *restHandler) HandleReadinessLiveness(ctx context.Context, w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodOptions:
 		h.handlePreflight(&w)
@@ -33,33 +35,33 @@ func (h *restHandler) HandleReadinessLiveness(w http.ResponseWriter, r *http.Req
 	}
 }
 
-func (h *restHandler) HandleCalculation(w http.ResponseWriter, r *http.Request) {
+func (h *restHandler) HandleCalculation(ctx context.Context, w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 
 	switch r.Method {
 	case http.MethodGet:
-		history := h.calculatorService.GetCalculationHistory()
+		history := h.calculatorService.GetCalculationHistory(ctx)
 
-		h.handleSuccess(&w, c.CalculatorHistory{Result: history})
+		h.handleSuccess(&w, history)
 
 		return
 
 	case http.MethodPost:
-		var calculator c.CalculatorInput
+		var calculator structs.CalculationInput
 		if err := json.NewDecoder(r.Body).Decode(&calculator); err != nil || calculator.Input == "" {
 			h.handleError(&w, errors.ErrInvalidInput)
 			return
 		}
 
-		result, err := h.calculatorService.Calculate(calculator.Input)
+		result, err := h.calculatorService.Calculate(ctx, calculator.Input)
 
 		if err != nil {
 			h.handleError(&w, err)
 			return
 		}
 
-		h.handleSuccess(&w, c.CalculatorResult{Input: calculator.Input, Result: result})
+		h.handleSuccess(&w, result)
 
 		return
 

@@ -1,6 +1,7 @@
 package rest_test
 
 import (
+	"context"
 	"io"
 	"net/http/httptest"
 	"strings"
@@ -9,6 +10,7 @@ import (
 	"github.com/ranggarppb/serverless-calculator/errors"
 	"github.com/ranggarppb/serverless-calculator/internal/rest"
 	"github.com/ranggarppb/serverless-calculator/mocks"
+	"github.com/ranggarppb/serverless-calculator/types/structs"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 )
@@ -16,15 +18,17 @@ import (
 func TestHandleCalculation(t *testing.T) {
 	testCases := []struct {
 		Desc               string
+		Ctx                context.Context
 		CalculatorService  *mocks.ICalculatorService
 		ReqBody            io.Reader
 		ExpectedStatusCode int
 	}{
 		{
 			Desc: "success-processing-normal-request",
+			Ctx:  context.TODO(),
 			CalculatorService: func() *mocks.ICalculatorService {
 				mockSvc := new(mocks.ICalculatorService)
-				mockSvc.On("Calculate", mock.AnythingOfType("string")).Return("4", nil)
+				mockSvc.On("Calculate", mock.Anything, mock.AnythingOfType("string")).Return(structs.CalculationResult{Input: "1 add 3", Result: "4"}, nil)
 				return mockSvc
 			}(),
 			ReqBody: strings.NewReader(
@@ -35,9 +39,10 @@ func TestHandleCalculation(t *testing.T) {
 		},
 		{
 			Desc: "success-returning-error",
+			Ctx:  context.TODO(),
 			CalculatorService: func() *mocks.ICalculatorService {
 				mockSvc := new(mocks.ICalculatorService)
-				mockSvc.On("Calculate", mock.AnythingOfType("string")).Return("", errors.ErrInvalidInput)
+				mockSvc.On("Calculate", mock.Anything, mock.AnythingOfType("string")).Return("", errors.ErrInvalidInput)
 				return mockSvc
 			}(),
 			ReqBody: strings.NewReader(
@@ -53,7 +58,7 @@ func TestHandleCalculation(t *testing.T) {
 			restHandler := rest.NewCalculatorRestHandler(tC.CalculatorService)
 			req := httptest.NewRequest("POST", "/calculation", tC.ReqBody)
 			rec := httptest.NewRecorder()
-			restHandler.HandleCalculation(rec, req)
+			restHandler.HandleCalculation(tC.Ctx, rec, req)
 			require.Equal(t, tC.ExpectedStatusCode, rec.Code)
 		})
 	}
