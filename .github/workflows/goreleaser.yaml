@@ -5,7 +5,7 @@ on:
   push:
     # run only against production tags
     tags:
-      - (refs/tags/v\d{0,3}\.\d{0,3}\.\d{0,3}$)
+      - '*'
 
 permissions:
   contents: write
