@@ -31,12 +31,12 @@ If you dont find your OS architecture in [Archived Executable](https://github.co
 - Fork and develop in your local computer, dont forget to run `. setup-pre-commit-hooks.sh` to setup pre-commit-hooks
 - Open Pull Request, make sure [the Test Workflow](https://github.com/ranggarppb/serverless-calculator/actions/workflows/pull-request.yaml)  passed
 - You can deploy manually from your branch with [Test Env Deployment Workflow](https://github.com/ranggarppb/serverless-calculator/actions/workflows/deploy-test.yaml)
-- To make sure your Pull Request doesn't introduce significant performance degradation, run [Load Test Workflow](https://github.com/ranggarppb/serverless-calculator/actions/workflows/load-test.yaml) (artifact of last production-env-mocking server could be downloaded [here](https://github.com/ranggarppb/serverless-calculator/suites/15880973846/artifacts/906268580))
+- To make sure your Pull Request doesn't introduce significant performance degradation, run [Load Test Workflow](https://github.com/ranggarppb/serverless-calculator/actions/workflows/load-test.yaml) (artifact of last production-env-mocking server could be downloaded [here](https://github.com/ranggarppb/serverless-calculator/suites/16253957144/artifacts/928137578))
 
 ## Features
 - For Console app, currently the feature of latest executable:
 	- Supporting without input calculation `abs`, `neg`, `sqr`, `sqrt`, `cube`, `cubert`, ex: typing `sqr`
-	- Supporting one input calculation `add`, `substract`, `multiply`, `divide`, ex: typing `add 3`
+	- Supporting multiple input calculation `add`, `subtract`, `multiply`, `divide`, ex: typing `add 3 multiply 5`
 	- The console start with `0`
 - For local HTTP function app, currently the feature of latest production deployment:
 	- Supporting single input calculation `abs`, `neg`, `sqr`, `sqrt`, `cube`, `cubert`
@@ -47,12 +47,12 @@ If you dont find your OS architecture in [Archived Executable](https://github.co
     		"input": "cubert -2"
 		}'
 	```
-	- Supporting two input calculation `add`, `substract`, `multiply`, `divide`
+	- Supporting multiple input calculation `add`, `subtract`, `multiply`, `divide`
 	```
 	curl --location --request POST 'localhost:8080/calculation' \
 		--header 'Content-Type: application/json' \
 		--data-raw '{
-    		"input": "1 add 2"
+    		"input": "1 add 2 multiple 5"
 		}'
 	```
 - For deployed HTTP function app, currently the feature of latest production deployment, its the same with local function just change URL to `https://asia-southeast2-serverless-calculator.cloudfunctions.net/serverless-calculator/calculation``
