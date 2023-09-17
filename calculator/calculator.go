@@ -134,20 +134,20 @@ func (c *calculatorService) doCalculationWithOneInput(input structs.CalculationW
 }
 
 func (c *calculatorService) validateAndConstructCalculationMultipleInput(inputs []string) (structs.CalculationWithMultipleInput, errors.WrappedError) {
-	if len(inputs) != 3 || !(utils.ContainString(utils.OPERATIONS_WITH_TWO_INPUTS, inputs[1])) {
+	if len(inputs)%2 != 1 {
 		return structs.CalculationWithMultipleInput{}, errors.ErrInvalidOperation
 	}
-
-	num1, err1 := decimal.NewFromString(inputs[0])
-	num2, err2 := decimal.NewFromString(inputs[2])
-
-	if !(err1 == nil && err2 == nil) {
-		return structs.CalculationWithMultipleInput{}, errors.ErrInvalidInputToBeOperated
+	for idx, i := range inputs {
+		if idx%2 == 1 && !utils.ContainString(utils.OPERATIONS_WITH_MULTIPLE_INPUTS, i) {
+			return structs.CalculationWithMultipleInput{}, errors.ErrInvalidOperation
+		} else if _, err := decimal.NewFromString(i); idx%2 == 0 && err != nil {
+			return structs.CalculationWithMultipleInput{}, errors.ErrInvalidInputToBeOperated
+		}
 	}
-	return structs.CalculationWithMultipleInput{Input1: num1, Input2: num2, Operation: inputs[1]}, nil
+	return structs.CalculationWithMultipleInput{Inputs: inputs}, nil
 }
 
-func (c *calculatorService) doCalculationWithMultipleInput(input structs.CalculationWithMultipleInput) (string, errors.WrappedError) {
+func (c *calculatorService) doCalculationWithTwoInput(input structs.CalculationWithTwoInput) (string, errors.WrappedError) {
 	switch input.Operation {
 	case utils.ADDITION:
 		return input.Input1.Add(input.Input2).String(), nil
@@ -160,4 +160,64 @@ func (c *calculatorService) doCalculationWithMultipleInput(input structs.Calcula
 	default:
 		return "", errors.ErrInvalidOperation
 	}
+}
+
+func (c *calculatorService) doCalculationWithMultipleInput(input structs.CalculationWithMultipleInput) (string, errors.WrappedError) {
+	postfixOperation := c.changeToPostfixOperation(input.Inputs)
+
+	return c.calculatePostfixOperation(postfixOperation)
+}
+
+func (c *calculatorService) changeToPostfixOperation(inputs []string) []string {
+	operationStacks := []string{}
+	res := []string{}
+
+	for _, i := range inputs {
+		if utils.ContainString(utils.OPERATIONS_WITH_MULTIPLE_INPUTS, i) {
+			if len(operationStacks) == 0 {
+				operationStacks = append(operationStacks, i)
+			} else if c.isMorePriority(i, operationStacks[len(operationStacks)-1]) {
+				operationStacks = append(operationStacks, i)
+			} else {
+				res = append(res, utils.Revert(operationStacks)...)
+				operationStacks = []string{i}
+			}
+		} else {
+			res = append(res, i)
+		}
+	}
+
+	if len(operationStacks) > 0 {
+		res = append(res, utils.Revert(operationStacks)...)
+	}
+
+	return res
+}
+
+func (c *calculatorService) calculatePostfixOperation(inputs []string) (string, errors.WrappedError) {
+
+	resStack := []string{}
+	for _, i := range inputs {
+		if utils.ContainString(utils.OPERATIONS_WITH_MULTIPLE_INPUTS, i) {
+			operand1, _ := decimal.NewFromString(resStack[len(resStack)-2])
+			operand2, _ := decimal.NewFromString(resStack[len(resStack)-1])
+			operation := structs.CalculationWithTwoInput{Input1: operand1, Input2: operand2, Operation: i}
+			result, err := c.doCalculationWithTwoInput(operation)
+
+			if err != nil {
+				return "", err
+			}
+
+			resStack = resStack[:len(resStack)-2]
+			resStack = append(resStack, result)
+		} else {
+			resStack = append(resStack, i)
+		}
+	}
+
+	return resStack[0], nil
+}
+
+func (c *calculatorService) isMorePriority(operation1 string, operation2 string) bool {
+	return utils.OPERATIONS_PRIORITY[operation1] > utils.OPERATIONS_PRIORITY[operation2]
 }

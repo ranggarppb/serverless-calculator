@@ -8,3 +8,13 @@ func ContainString(list []string, target string) bool {
 	}
 	return false
 }
+
+func Revert(list []string) []string {
+	res := []string{}
+
+	for i, _ := range list {
+		res = append(res, list[len(list)-i-1])
+	}
+
+	return res
+}

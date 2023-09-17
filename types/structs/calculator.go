@@ -22,8 +22,12 @@ type CalculationWithOneInput struct {
 	Operation string
 }
 
-type CalculationWithMultipleInput struct {
+type CalculationWithTwoInput struct {
 	Input1    decimal.Decimal
 	Input2    decimal.Decimal
 	Operation string
+}
+
+type CalculationWithMultipleInput struct {
+	Inputs []string
 }

@@ -6,5 +6,7 @@ var (
 	GetValidateAndConstructCalculationOneInput      = (*calculatorService).validateAndConstructCalculationOneInput
 	GetDoCalculationWithOneInput                    = (*calculatorService).doCalculationWithOneInput
 	GetValidateAndConstructCalculationMultipleInput = (*calculatorService).validateAndConstructCalculationMultipleInput
-	GetDoCalculationWithMultipleInput               = (*calculatorService).doCalculationWithMultipleInput
+	GetDoCalculationWithTwoInput                    = (*calculatorService).doCalculationWithTwoInput
+	GetChangeToPostfixOperation                     = (*calculatorService).changeToPostfixOperation
+	GetCalculatePostfixOperation                    = (*calculatorService).calculatePostfixOperation
 )
