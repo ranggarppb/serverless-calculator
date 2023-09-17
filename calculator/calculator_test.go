@@ -188,9 +188,7 @@ func (s *calculatorTestSuite) TestDoCalculationWithOneInput() {
 
 func (s *calculatorTestSuite) TestValidateAndConstructCalculationMultipleInput() {
 	input1 := "2"
-	input1Dec, _ := decimal.NewFromString(input1)
 	input2 := "3"
-	input2Dec, _ := decimal.NewFromString(input2)
 	testCases := []struct {
 		Desc        string
 		Input       []string
@@ -200,7 +198,7 @@ func (s *calculatorTestSuite) TestValidateAndConstructCalculationMultipleInput()
 		{
 			Desc:        "success-validate-and-construct-calculation-with-multiple-input",
 			Input:       []string{input1, "add", input2},
-			ExpectedRes: structs.CalculationWithMultipleInput{Input1: input1Dec, Input2: input2Dec, Operation: "add"},
+			ExpectedRes: structs.CalculationWithMultipleInput{Inputs: []string{input1, "add", input2}},
 			ExpectedErr: nil,
 		},
 		{
@@ -237,44 +235,44 @@ func (s *calculatorTestSuite) TestValidateAndConstructCalculationMultipleInput()
 	}
 }
 
-func (s *calculatorTestSuite) TestDoCalculationWithMultipleInput() {
+func (s *calculatorTestSuite) TestDoCalculationWithTwoInput() {
 	input1 := "2"
 	input1Dec, _ := decimal.NewFromString(input1)
 	input2 := "3"
 	input2Dec, _ := decimal.NewFromString(input2)
 	testCases := []struct {
 		Desc        string
-		Input       structs.CalculationWithMultipleInput
+		Input       structs.CalculationWithTwoInput
 		ExpectedRes string
 		ExpectedErr error
 	}{
 		{
 			Desc:        "success-do-addition",
-			Input:       structs.CalculationWithMultipleInput{Input1: input1Dec, Input2: input2Dec, Operation: "add"},
+			Input:       structs.CalculationWithTwoInput{Input1: input1Dec, Input2: input2Dec, Operation: "add"},
 			ExpectedRes: input1Dec.Add(input2Dec).String(),
 			ExpectedErr: nil,
 		},
 		{
 			Desc:        "success-do-negation",
-			Input:       structs.CalculationWithMultipleInput{Input1: input1Dec, Input2: input2Dec, Operation: "substract"},
+			Input:       structs.CalculationWithTwoInput{Input1: input1Dec, Input2: input2Dec, Operation: "substract"},
 			ExpectedRes: input1Dec.Sub(input2Dec).String(),
 			ExpectedErr: nil,
 		},
 		{
 			Desc:        "success-do-multiplicaiton",
-			Input:       structs.CalculationWithMultipleInput{Input1: input1Dec, Input2: input2Dec, Operation: "multiply"},
+			Input:       structs.CalculationWithTwoInput{Input1: input1Dec, Input2: input2Dec, Operation: "multiply"},
 			ExpectedRes: input1Dec.Mul(input2Dec).String(),
 			ExpectedErr: nil,
 		},
 		{
 			Desc:        "success-do-division",
-			Input:       structs.CalculationWithMultipleInput{Input1: input1Dec, Input2: input2Dec, Operation: "divide"},
+			Input:       structs.CalculationWithTwoInput{Input1: input1Dec, Input2: input2Dec, Operation: "divide"},
 			ExpectedRes: input1Dec.Div(input2Dec).String(),
 			ExpectedErr: nil,
 		},
 		{
 			Desc:        "failed-with-invalid-operation",
-			Input:       structs.CalculationWithMultipleInput{Input1: input1Dec, Input2: input2Dec, Operation: "random"},
+			Input:       structs.CalculationWithTwoInput{Input1: input1Dec, Input2: input2Dec, Operation: "random"},
 			ExpectedRes: "",
 			ExpectedErr: errors.ErrInvalidOperation,
 		},
@@ -282,7 +280,7 @@ func (s *calculatorTestSuite) TestDoCalculationWithMultipleInput() {
 	for _, tC := range testCases {
 		s.T().Run(tC.Desc, func(t *testing.T) {
 			calculatorSvc := calculator.NewCalculatorService()
-			res, err := calculator.GetDoCalculationWithMultipleInput(calculatorSvc, tC.Input)
+			res, err := calculator.GetDoCalculationWithTwoInput(calculatorSvc, tC.Input)
 
 			if tC.ExpectedErr != nil {
 				require.Equal(t, tC.ExpectedErr, err)
@@ -298,7 +296,6 @@ func (s *calculatorTestSuite) TestParsingInput() {
 	input1 := "1"
 	input2 := "2"
 	input1Dec, _ := decimal.NewFromString(input1)
-	input2Dec, _ := decimal.NewFromString(input2)
 	testCases := []struct {
 		Desc        string
 		Input       string
@@ -314,7 +311,13 @@ func (s *calculatorTestSuite) TestParsingInput() {
 		{
 			Desc:        "success-parsing-with-normal-input-for-calculation-with-multiple-input",
 			Input:       fmt.Sprintf("%v add %v", input1, input2),
-			ExpectedRes: structs.CalculationWithMultipleInput{Input1: input1Dec, Input2: input2Dec, Operation: "add"},
+			ExpectedRes: structs.CalculationWithMultipleInput{Inputs: []string{input1, "add", input2}},
+			ExpectedErr: nil,
+		},
+		{
+			Desc:        "success-parsing-with-normal-input-for-calculation-with-multiple-input-2",
+			Input:       fmt.Sprintf("%v add %v multiply %v", input1, input2, input2),
+			ExpectedRes: structs.CalculationWithMultipleInput{Inputs: []string{input1, "add", input2, "multiply", input2}},
 			ExpectedErr: nil,
 		},
 		{
@@ -354,6 +357,142 @@ func (s *calculatorTestSuite) TestParsingInput() {
 				require.Empty(t, err)
 				require.Equal(t, tC.ExpectedRes, res)
 			}
+		})
+	}
+}
+
+func (s *calculatorTestSuite) TestChangeToPostfixOperation() {
+	testCases := []struct {
+		Desc        string
+		Inputs      []string
+		ExpectedRes []string
+	}{
+		{
+			Desc:        "success-change-two-inputs-add-operation-to-postfix",
+			Inputs:      []string{"1", "add", "2"},
+			ExpectedRes: []string{"1", "2", "add"},
+		},
+		{
+			Desc:        "success-change-two-inputs-substract-operation-to-postfix",
+			Inputs:      []string{"1", "substract", "2"},
+			ExpectedRes: []string{"1", "2", "substract"},
+		},
+		{
+			Desc:        "success-change-two-inputs-multiply-operation-to-postfix",
+			Inputs:      []string{"1", "multiply", "2"},
+			ExpectedRes: []string{"1", "2", "multiply"},
+		},
+		{
+			Desc:        "success-change-two-inputs-divide-operation-to-postfix",
+			Inputs:      []string{"1", "divide", "2"},
+			ExpectedRes: []string{"1", "2", "divide"},
+		},
+		{
+			Desc:        "success-change-multiple-inputs-with-equal-priority-operation-1-to-postfix",
+			Inputs:      []string{"1", "add", "3", "substract", "5"},
+			ExpectedRes: []string{"1", "3", "add", "5", "substract"},
+		},
+		{
+			Desc:        "success-change-multiple-inputs-with-equal-priority-operation-2-to-postfix",
+			Inputs:      []string{"1", "multiply", "3", "divide", "5"},
+			ExpectedRes: []string{"1", "3", "multiply", "5", "divide"},
+		},
+		{
+			Desc:        "success-change-multiple-inputs-with-non-equal-priority-operation-1-to-postfix",
+			Inputs:      []string{"1", "add", "3", "multiply", "5"},
+			ExpectedRes: []string{"1", "3", "5", "multiply", "add"},
+		},
+		{
+			Desc:        "success-change-multiple-inputs-with-non-equal-priority-operation-2-to-postfix",
+			Inputs:      []string{"1", "multiply", "3", "add", "5"},
+			ExpectedRes: []string{"1", "3", "multiply", "5", "add"},
+		},
+		{
+			Desc:        "success-change-multiple-inputs-with-non-equal-priority-operation-3-to-postfix",
+			Inputs:      []string{"1", "add", "3", "multiply", "5", "substract", "2"},
+			ExpectedRes: []string{"1", "3", "5", "multiply", "add", "2", "substract"},
+		},
+		{
+			Desc:        "success-change-multiple-inputs-with-non-equal-priority-operation-4-to-postfix",
+			Inputs:      []string{"1", "multiply", "3", "add", "5", "divide", "2"},
+			ExpectedRes: []string{"1", "3", "multiply", "5", "2", "divide", "add"},
+		},
+	}
+
+	for _, tC := range testCases {
+		s.T().Run(tC.Desc, func(t *testing.T) {
+			calculatorSvc := calculator.NewCalculatorService()
+			res := calculator.GetChangeToPostfixOperation(calculatorSvc, tC.Inputs)
+
+			require.Equal(t, tC.ExpectedRes, res)
+		})
+	}
+}
+
+func (s *calculatorTestSuite) TestCalculatePostfixOperation() {
+	testCases := []struct {
+		Desc        string
+		Inputs      []string
+		ExpectedRes string
+	}{
+		{
+			Desc:        "success-calculate-two-inputs-add-postfix-operation",
+			Inputs:      []string{"1", "2", "add"},
+			ExpectedRes: "3",
+		},
+		{
+			Desc:        "success-calculate-two-inputs-substract-postfix-operation",
+			Inputs:      []string{"1", "2", "substract"},
+			ExpectedRes: "-1",
+		},
+		{
+			Desc:        "success-calculate-two-inputs-multiply-postfix-operation",
+			Inputs:      []string{"1", "2", "multiply"},
+			ExpectedRes: "2",
+		},
+		{
+			Desc:        "success-calculate-two-inputs-divide-postfix-operation",
+			Inputs:      []string{"1", "2", "divide"},
+			ExpectedRes: "0.5",
+		},
+		{
+			Desc:        "success-calculate-multiple-inputs-with-equal-priority-postfix-operation-1",
+			Inputs:      []string{"1", "3", "add", "5", "substract"},
+			ExpectedRes: "-1",
+		},
+		{
+			Desc:        "success-calculate-multiple-inputs-with-equal-priority-postfix-operation-2",
+			Inputs:      []string{"15", "3", "multiply", "5", "divide"},
+			ExpectedRes: "9",
+		},
+		{
+			Desc:        "success-calculate-multiple-inputs-with-non-equal-priority-postfix-operation-1",
+			Inputs:      []string{"1", "3", "5", "multiply", "add"},
+			ExpectedRes: "16",
+		},
+		{
+			Desc:        "success-calculate-multiple-inputs-with-non-equal-priority-postfix-operation-2",
+			Inputs:      []string{"1", "3", "multiply", "5", "add"},
+			ExpectedRes: "8",
+		},
+		{
+			Desc:        "success-calculate-multiple-inputs-with-non-equal-priority-postfix-operation-3",
+			Inputs:      []string{"1", "3", "5", "multiply", "add", "2", "substract"},
+			ExpectedRes: "14",
+		},
+		{
+			Desc:        "success-calculate-multiple-inputs-with-non-equal-priority-postfix-operation-4",
+			Inputs:      []string{"1", "3", "multiply", "6", "2", "divide", "add"},
+			ExpectedRes: "6",
+		},
+	}
+
+	for _, tC := range testCases {
+		s.T().Run(tC.Desc, func(t *testing.T) {
+			calculatorSvc := calculator.NewCalculatorService()
+			res, _ := calculator.GetCalculatePostfixOperation(calculatorSvc, tC.Inputs)
+
+			require.Equal(t, tC.ExpectedRes, res)
 		})
 	}
 }
