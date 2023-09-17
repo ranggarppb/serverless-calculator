@@ -4,7 +4,7 @@
 
 Backend of serverless-calculator project (just a regular calculator, but serverless, because why not?)
 
-[Archived Executable](https://github.com/ranggarppb/serverless-calculator/suites/16157713024/artifacts/922573855):
+[Archived Executable](https://github.com/ranggarppb/serverless-calculator/suites/16254169095/artifacts/928144431):
 - linux/amd64
 - darwin/amd64
 - windows/amd64
@@ -12,7 +12,7 @@ Backend of serverless-calculator project (just a regular calculator, but serverl
 Serverless Function App:
 - Backend server (Google Cloud Function): https://asia-southeast2-serverless-calculator.cloudfunctions.net/serverless-calculator/calculation
 - Frontend server (Firebase Hosting): https://serverless-calculator.web.app/
-- Swagger documentation: https://app.swaggerhub.com/apis/RANGGAPUTRAPERTAMAPP/serverless-calculator/1.0.0
+- Swagger documentation: https://app.swaggerhub.com/apis/RANGGAPUTRAPERTAMAPP/serverless-calculator/1.1.0
 
 ## How To Run Executable
 For now executable can be run for **console app** and **function app**. Run it with `console` / `function` argument
