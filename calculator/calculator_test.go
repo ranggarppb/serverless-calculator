@@ -254,7 +254,7 @@ func (s *calculatorTestSuite) TestDoCalculationWithTwoInput() {
 		},
 		{
 			Desc:        "success-do-negation",
-			Input:       structs.CalculationWithTwoInput{Input1: input1Dec, Input2: input2Dec, Operation: "substract"},
+			Input:       structs.CalculationWithTwoInput{Input1: input1Dec, Input2: input2Dec, Operation: "subtract"},
 			ExpectedRes: input1Dec.Sub(input2Dec).String(),
 			ExpectedErr: nil,
 		},
@@ -373,9 +373,9 @@ func (s *calculatorTestSuite) TestChangeToPostfixOperation() {
 			ExpectedRes: []string{"1", "2", "add"},
 		},
 		{
-			Desc:        "success-change-two-inputs-substract-operation-to-postfix",
-			Inputs:      []string{"1", "substract", "2"},
-			ExpectedRes: []string{"1", "2", "substract"},
+			Desc:        "success-change-two-inputs-subtract-operation-to-postfix",
+			Inputs:      []string{"1", "subtract", "2"},
+			ExpectedRes: []string{"1", "2", "subtract"},
 		},
 		{
 			Desc:        "success-change-two-inputs-multiply-operation-to-postfix",
@@ -389,8 +389,8 @@ func (s *calculatorTestSuite) TestChangeToPostfixOperation() {
 		},
 		{
 			Desc:        "success-change-multiple-inputs-with-equal-priority-operation-1-to-postfix",
-			Inputs:      []string{"1", "add", "3", "substract", "5"},
-			ExpectedRes: []string{"1", "3", "add", "5", "substract"},
+			Inputs:      []string{"1", "add", "3", "subtract", "5"},
+			ExpectedRes: []string{"1", "3", "add", "5", "subtract"},
 		},
 		{
 			Desc:        "success-change-multiple-inputs-with-equal-priority-operation-2-to-postfix",
@@ -409,8 +409,8 @@ func (s *calculatorTestSuite) TestChangeToPostfixOperation() {
 		},
 		{
 			Desc:        "success-change-multiple-inputs-with-non-equal-priority-operation-3-to-postfix",
-			Inputs:      []string{"1", "add", "3", "multiply", "5", "substract", "2"},
-			ExpectedRes: []string{"1", "3", "5", "multiply", "add", "2", "substract"},
+			Inputs:      []string{"1", "add", "3", "multiply", "5", "subtract", "2"},
+			ExpectedRes: []string{"1", "3", "5", "multiply", "add", "2", "subtract"},
 		},
 		{
 			Desc:        "success-change-multiple-inputs-with-non-equal-priority-operation-4-to-postfix",
@@ -441,8 +441,8 @@ func (s *calculatorTestSuite) TestCalculatePostfixOperation() {
 			ExpectedRes: "3",
 		},
 		{
-			Desc:        "success-calculate-two-inputs-substract-postfix-operation",
-			Inputs:      []string{"1", "2", "substract"},
+			Desc:        "success-calculate-two-inputs-subtract-postfix-operation",
+			Inputs:      []string{"1", "2", "subtract"},
 			ExpectedRes: "-1",
 		},
 		{
@@ -457,7 +457,7 @@ func (s *calculatorTestSuite) TestCalculatePostfixOperation() {
 		},
 		{
 			Desc:        "success-calculate-multiple-inputs-with-equal-priority-postfix-operation-1",
-			Inputs:      []string{"1", "3", "add", "5", "substract"},
+			Inputs:      []string{"1", "3", "add", "5", "subtract"},
 			ExpectedRes: "-1",
 		},
 		{
@@ -477,7 +477,7 @@ func (s *calculatorTestSuite) TestCalculatePostfixOperation() {
 		},
 		{
 			Desc:        "success-calculate-multiple-inputs-with-non-equal-priority-postfix-operation-3",
-			Inputs:      []string{"1", "3", "5", "multiply", "add", "2", "substract"},
+			Inputs:      []string{"1", "3", "5", "multiply", "add", "2", "subtract"},
 			ExpectedRes: "14",
 		},
 		{

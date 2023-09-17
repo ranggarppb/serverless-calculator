@@ -2,7 +2,7 @@ package utils
 
 const (
 	ADDITION        = "add"
-	SUBSTRACTION    = "substract"
+	SUBSTRACTION    = "subtract"
 	MULTIPLICATION  = "multiply"
 	DIVISION        = "divide"
 	NEGATION        = "neg"
