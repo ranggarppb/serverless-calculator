@@ -9,7 +9,7 @@ import (
 	"strings"
 
 	"github.com/ranggarppb/serverless-calculator/errors"
-	"github.com/ranggarppb/serverless-calculator/types/structs"
+	cl "github.com/ranggarppb/serverless-calculator/types/calculator"
 	"github.com/ranggarppb/serverless-calculator/utils"
 	"github.com/spf13/cobra"
 )
@@ -27,8 +27,8 @@ func init() {
 func startConsole(cmd *cobra.Command, args []string) {
 	var input string
 	var res string = "0"
-	var calculationResult structs.CalculationResult
-	var calculationHistory structs.CalculationHistory
+	var calculationResult cl.CalculationResult
+	var calculationHistory cl.CalculationHistory
 	var err errors.WrappedError
 	consoleReader := bufio.NewReader(os.Stdin)
 	ctx := context.Background()
@@ -68,7 +68,7 @@ Operation:
 	}
 }
 
-func doOperation(ctx context.Context, trimmedInput string, initial string, history structs.CalculationHistory) (structs.CalculationResult, errors.WrappedError) {
+func doOperation(ctx context.Context, trimmedInput string, initial string, history cl.CalculationHistory) (cl.CalculationResult, errors.WrappedError) {
 	inputs := strings.Split(trimmedInput, " ")
 	switch {
 	case utils.ContainString(utils.OPERATIONS_WITH_ONE_INPUTS, inputs[0]):
@@ -77,7 +77,7 @@ func doOperation(ctx context.Context, trimmedInput string, initial string, histo
 		repeatInput, err := validateRepeatOperation(inputs, history)
 
 		if err != nil {
-			return structs.CalculationResult{}, err
+			return cl.CalculationResult{}, err
 		}
 
 		return doRepeatOperation(ctx, initial, repeatInput, history)
@@ -87,7 +87,7 @@ func doOperation(ctx context.Context, trimmedInput string, initial string, histo
 	}
 }
 
-func validateRepeatOperation(inputs []string, history structs.CalculationHistory) (int, errors.WrappedError) {
+func validateRepeatOperation(inputs []string, history cl.CalculationHistory) (int, errors.WrappedError) {
 	if len(inputs) > 2 {
 		return 0, errors.ErrInvalidOperation
 	}
@@ -100,8 +100,8 @@ func validateRepeatOperation(inputs []string, history structs.CalculationHistory
 	return repeatInput, nil
 }
 
-func doRepeatOperation(ctx context.Context, initial string, repeatInput int, history structs.CalculationHistory) (
-	structs.CalculationResult, errors.WrappedError) {
+func doRepeatOperation(ctx context.Context, initial string, repeatInput int, history cl.CalculationHistory) (
+	cl.CalculationResult, errors.WrappedError) {
 	operationToBeRepeated := strings.Split(history.History[len(history.History)-repeatInput].Input, " ")
 
 	if utils.ContainString(utils.OPERATIONS_WITH_ONE_INPUTS, operationToBeRepeated[0]) {
