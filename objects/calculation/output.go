@@ -1,4 +1,4 @@
-package calculator
+package calculation
 
 type CalculationResult struct {
 	Input  string `json:"input"`

@@ -5,9 +5,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/ranggarppb/serverless-calculator/errors"
-	c "github.com/ranggarppb/serverless-calculator/types/calculator"
+	c "github.com/ranggarppb/serverless-calculator/objects/calculation"
+	"github.com/ranggarppb/serverless-calculator/utils"
 )
 
 type restHandler struct {
@@ -47,13 +49,24 @@ func (h *restHandler) HandleCalculation(ctx context.Context, w http.ResponseWrit
 		return
 
 	case http.MethodPost:
-		var calculator c.CalculationInput
-		if err := json.NewDecoder(r.Body).Decode(&calculator); err != nil || calculator.Input == "" {
+		var calculationInput c.CalculationInput
+		if err := json.NewDecoder(r.Body).Decode(&calculationInput); err != nil || calculationInput.Input == "" {
 			h.handleError(&w, errors.ErrInvalidInput)
 			return
 		}
 
-		result, err := h.calculatorService.Calculate(ctx, calculator.Input)
+		if splittedInput := strings.Split(calculationInput.Input, " "); len(splittedInput) > 0 &&
+			(utils.ContainString(utils.OPERATIONS_WITH_ONE_INPUTS, splittedInput[0])) {
+			calculationInput.Input = fmt.Sprintf(" %s", calculationInput.Input)
+		}
+
+		parsedCalculationInput, err := calculationInput.ParseCalculationInput(c.CalculationHistory{})
+
+		if err != nil {
+			h.handleError(&w, err)
+		}
+
+		result, err := h.calculatorService.Calculate(ctx, parsedCalculationInput)
 
 		if err != nil {
 			h.handleError(&w, err)

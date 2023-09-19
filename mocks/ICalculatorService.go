@@ -5,7 +5,7 @@ package mocks
 import (
 	context "context"
 
-	calculator "github.com/ranggarppb/serverless-calculator/types/calculator"
+	calculation "github.com/ranggarppb/serverless-calculator/objects/calculation"
 
 	errors "github.com/ranggarppb/serverless-calculator/errors"
 
@@ -18,21 +18,21 @@ type ICalculatorService struct {
 }
 
 // Calculate provides a mock function with given fields: _a0, _a1
-func (_m *ICalculatorService) Calculate(_a0 context.Context, _a1 string) (calculator.CalculationResult, errors.WrappedError) {
+func (_m *ICalculatorService) Calculate(_a0 context.Context, _a1 calculation.ICalculationInput) (calculation.CalculationResult, errors.WrappedError) {
 	ret := _m.Called(_a0, _a1)
 
-	var r0 calculator.CalculationResult
+	var r0 calculation.CalculationResult
 	var r1 errors.WrappedError
-	if rf, ok := ret.Get(0).(func(context.Context, string) (calculator.CalculationResult, errors.WrappedError)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, calculation.ICalculationInput) (calculation.CalculationResult, errors.WrappedError)); ok {
 		return rf(_a0, _a1)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, string) calculator.CalculationResult); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, calculation.ICalculationInput) calculation.CalculationResult); ok {
 		r0 = rf(_a0, _a1)
 	} else {
-		r0 = ret.Get(0).(calculator.CalculationResult)
+		r0 = ret.Get(0).(calculation.CalculationResult)
 	}
 
-	if rf, ok := ret.Get(1).(func(context.Context, string) errors.WrappedError); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, calculation.ICalculationInput) errors.WrappedError); ok {
 		r1 = rf(_a0, _a1)
 	} else {
 		if ret.Get(1) != nil {
@@ -44,14 +44,14 @@ func (_m *ICalculatorService) Calculate(_a0 context.Context, _a1 string) (calcul
 }
 
 // GetCalculationHistory provides a mock function with given fields: _a0
-func (_m *ICalculatorService) GetCalculationHistory(_a0 context.Context) calculator.CalculationHistory {
+func (_m *ICalculatorService) GetCalculationHistory(_a0 context.Context) calculation.CalculationHistory {
 	ret := _m.Called(_a0)
 
-	var r0 calculator.CalculationHistory
-	if rf, ok := ret.Get(0).(func(context.Context) calculator.CalculationHistory); ok {
+	var r0 calculation.CalculationHistory
+	if rf, ok := ret.Get(0).(func(context.Context) calculation.CalculationHistory); ok {
 		r0 = rf(_a0)
 	} else {
-		r0 = ret.Get(0).(calculator.CalculationHistory)
+		r0 = ret.Get(0).(calculation.CalculationHistory)
 	}
 
 	return r0

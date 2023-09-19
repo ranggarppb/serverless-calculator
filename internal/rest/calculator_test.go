@@ -2,6 +2,7 @@ package rest_test
 
 import (
 	"context"
+	"fmt"
 	"io"
 	"net/http/httptest"
 	"strings"
@@ -10,7 +11,7 @@ import (
 	"github.com/ranggarppb/serverless-calculator/errors"
 	"github.com/ranggarppb/serverless-calculator/internal/rest"
 	"github.com/ranggarppb/serverless-calculator/mocks"
-	c "github.com/ranggarppb/serverless-calculator/types/calculator"
+	c "github.com/ranggarppb/serverless-calculator/objects/calculation"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"
 )
@@ -21,20 +22,39 @@ func TestHandleCalculation(t *testing.T) {
 		Ctx                context.Context
 		CalculatorService  *mocks.ICalculatorService
 		ReqBody            io.Reader
+		ExpectedRespBody   string
 		ExpectedStatusCode int
 	}{
 		{
-			Desc: "success-processing-normal-request",
+			Desc: "success-processing-request-with-multiple-inputs",
 			Ctx:  context.TODO(),
 			CalculatorService: func() *mocks.ICalculatorService {
 				mockSvc := new(mocks.ICalculatorService)
-				mockSvc.On("Calculate", mock.Anything, mock.AnythingOfType("string")).Return(c.CalculationResult{Input: "1 add 3", Result: "4"}, nil)
+				input := c.NewCalculationWithMultipleInput([]string{"1", "add", "3", "multiply", "2"})
+				mockSvc.On("Calculate", mock.Anything, input).Return(c.CalculationResult{Input: "1 add 3 multiply 2", Result: "7"}, nil)
 				return mockSvc
 			}(),
 			ReqBody: strings.NewReader(
 				`{
-					"input": "1 add 3"
+					"input": "1 add 3 multiply 2"
 				}`),
+			ExpectedRespBody:   `{"input":"1 add 3 multiply 2","result":"7"}`,
+			ExpectedStatusCode: 200,
+		},
+		{
+			Desc: "success-processing-request-with-one-input",
+			Ctx:  context.TODO(),
+			CalculatorService: func() *mocks.ICalculatorService {
+				mockSvc := new(mocks.ICalculatorService)
+				input := c.NewCalculationWithOneInput("sqr", []string{"2"})
+				mockSvc.On("Calculate", mock.Anything, input).Return(c.CalculationResult{Input: "sqr 2", Result: "4"}, nil)
+				return mockSvc
+			}(),
+			ReqBody: strings.NewReader(
+				`{
+					"input": "sqr 2"
+				}`),
+			ExpectedRespBody:   `{"input":"sqr 2","result":"4"}`,
 			ExpectedStatusCode: 200,
 		},
 		{
@@ -49,6 +69,7 @@ func TestHandleCalculation(t *testing.T) {
 				`{
 					"input": ""
 				}`),
+			ExpectedRespBody:   `{"error_code":"INVALID_INPUT","error_message":"Please specify input field"}`,
 			ExpectedStatusCode: 400,
 		},
 	}
@@ -60,6 +81,7 @@ func TestHandleCalculation(t *testing.T) {
 			rec := httptest.NewRecorder()
 			restHandler.HandleCalculation(tC.Ctx, rec, req)
 			require.Equal(t, tC.ExpectedStatusCode, rec.Code)
+			require.Equal(t, fmt.Sprintf("%s\n", tC.ExpectedRespBody), rec.Body.String())
 		})
 	}
 }

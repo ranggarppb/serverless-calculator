@@ -5,7 +5,7 @@ import (
 
 	"github.com/ranggarppb/serverless-calculator/calculator"
 	"github.com/ranggarppb/serverless-calculator/internal/rest"
-	cl "github.com/ranggarppb/serverless-calculator/types/calculator"
+	cl "github.com/ranggarppb/serverless-calculator/objects/calculation"
 	"github.com/spf13/cobra"
 )
 

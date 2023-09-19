@@ -4,7 +4,7 @@ import (
 	"context"
 	"net/http"
 
-	c "github.com/ranggarppb/serverless-calculator/types/calculator"
+	c "github.com/ranggarppb/serverless-calculator/objects/calculation"
 )
 
 func CreateCalculateFunction(calculatorRestHandler c.ICalculatorRestHandler) func(http.ResponseWriter, *http.Request) {

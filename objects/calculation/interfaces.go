@@ -1,4 +1,4 @@
-package calculator
+package calculation
 
 import (
 	"context"
@@ -8,12 +8,14 @@ import (
 )
 
 type ICalculationInput interface {
+	GetInput() string
 	Validate() errors.WrappedError
+	Calculate() string
 }
 
 type ICalculatorService interface {
 	GetCalculationHistory(context.Context) CalculationHistory
-	Calculate(context.Context, string) (CalculationResult, errors.WrappedError)
+	Calculate(context.Context, ICalculationInput) (CalculationResult, errors.WrappedError)
 }
 
 type ICalculatorRestHandler interface {
