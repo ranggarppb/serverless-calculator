@@ -5,11 +5,10 @@ import (
 	"context"
 	"fmt"
 	"os"
-	"strconv"
 	"strings"
 
 	"github.com/ranggarppb/serverless-calculator/errors"
-	"github.com/ranggarppb/serverless-calculator/types/structs"
+	cl "github.com/ranggarppb/serverless-calculator/objects/calculation"
 	"github.com/ranggarppb/serverless-calculator/utils"
 	"github.com/spf13/cobra"
 )
@@ -27,8 +26,8 @@ func init() {
 func startConsole(cmd *cobra.Command, args []string) {
 	var input string
 	var res string = "0"
-	var calculationResult structs.CalculationResult
-	var calculationHistory structs.CalculationHistory
+	var calculationResult cl.CalculationResult
+	var calculationHistory cl.CalculationHistory
 	var err errors.WrappedError
 	consoleReader := bufio.NewReader(os.Stdin)
 	ctx := context.Background()
@@ -68,46 +67,14 @@ Operation:
 	}
 }
 
-func doOperation(ctx context.Context, trimmedInput string, initial string, history structs.CalculationHistory) (structs.CalculationResult, errors.WrappedError) {
-	inputs := strings.Split(trimmedInput, " ")
-	switch {
-	case utils.ContainString(utils.OPERATIONS_WITH_ONE_INPUTS, inputs[0]):
-		return calculatorService.Calculate(ctx, fmt.Sprintf("%s %s", trimmedInput, initial))
-	case inputs[0] == utils.REPEAT:
-		repeatInput, err := validateRepeatOperation(inputs, history)
+func doOperation(ctx context.Context, trimmedInput string, initial string, history cl.CalculationHistory) (cl.CalculationResult, errors.WrappedError) {
+	calculationInput := cl.CalculationInput{Input: fmt.Sprintf("%s %s", initial, trimmedInput)}
 
-		if err != nil {
-			return structs.CalculationResult{}, err
-		}
+	parsedCalculationInput, err := calculationInput.ParseCalculationInput(history)
 
-		return doRepeatOperation(ctx, initial, repeatInput, history)
-
-	default:
-		return calculatorService.Calculate(ctx, fmt.Sprintf("%s %s", initial, trimmedInput))
-	}
-}
-
-func validateRepeatOperation(inputs []string, history structs.CalculationHistory) (int, errors.WrappedError) {
-	if len(inputs) > 2 {
-		return 0, errors.ErrInvalidOperation
-	}
-	repeatInput, err := strconv.Atoi(inputs[1])
-
-	if err != nil || repeatInput > len(history.History) {
-		return 0, errors.ErrInvalidInputToBeOperated
+	if err != nil {
+		return cl.CalculationResult{}, err
 	}
 
-	return repeatInput, nil
-}
-
-func doRepeatOperation(ctx context.Context, initial string, repeatInput int, history structs.CalculationHistory) (
-	structs.CalculationResult, errors.WrappedError) {
-	operationToBeRepeated := strings.Split(history.History[len(history.History)-repeatInput].Input, " ")
-
-	if utils.ContainString(utils.OPERATIONS_WITH_ONE_INPUTS, operationToBeRepeated[0]) {
-		return calculatorService.Calculate(ctx, fmt.Sprintf("%s %s", operationToBeRepeated[0], initial))
-	} else {
-		operationToBeRepeated[0] = initial
-		return calculatorService.Calculate(ctx, strings.Join(operationToBeRepeated, " "))
-	}
+	return calculatorService.Calculate(ctx, parsedCalculationInput)
 }

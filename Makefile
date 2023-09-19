@@ -14,4 +14,5 @@ console:
 
 mockery-gen:
 	@rm -rf ./mocks
-	$(GOPATH)/bin/mockery --name ICalculatorService --dir ./types/interfaces
+	$(GOPATH)/bin/mockery --name ICalculatorService --dir ./objects/calculation
+	$(GOPATH)/bin/mockery --name ICalculationInput --dir ./objects/calculation
