@@ -21,18 +21,54 @@ func (i calculationWithMultipleInput) GetInput() string {
 }
 
 func (i calculationWithMultipleInput) Validate() errors.WrappedError {
-	if len(i.Inputs)%2 != 1 {
-		return errors.ErrInvalidOperation
-	}
-	for idx, i := range i.Inputs {
-		if idx%2 == 1 && !utils.ContainString(utils.OPERATIONS_WITH_MULTIPLE_INPUTS, i) {
+	for idx, element := range i.Inputs {
+		_, err := decimal.NewFromString(element)
+
+		switch {
+		case err == nil:
+			if (idx == 0) && !i.validOperation(i.Inputs[idx+1]) {
+				return errors.ErrInvalidOperation
+			}
+			if (idx == len(i.Inputs)-1) && !i.validOperation(i.Inputs[idx-1]) {
+				return errors.ErrInvalidOperation
+			}
+			if !(idx == 0 || idx == len(i.Inputs)-1) && !i.validOperation(i.Inputs[idx-1]) {
+				return errors.ErrInvalidOperation
+			}
+			if !(idx == 0 || idx == len(i.Inputs)-1) && !i.validOperation(i.Inputs[idx+1]) {
+				return errors.ErrInvalidOperation
+			}
+		case utils.ContainString(utils.OPERATIONS_WITH_MULTIPLE_INPUTS, element):
+			if (idx == 0) || (idx == len(i.Inputs)-1) {
+				return errors.ErrInvalidOperation
+			}
+
+			if !(idx == 0) || (idx == len(i.Inputs)-1) {
+				_, err1 := decimal.NewFromString(i.Inputs[idx-1])
+				_, err2 := decimal.NewFromString(i.Inputs[idx+1])
+				if !(err1 == nil || err2 == nil) {
+					return errors.ErrInvalidInputToBeOperated
+				}
+			}
+		default:
+			if idx == 0 {
+				return errors.ErrInvalidOperation
+			}
+			if idx == len(i.Inputs)-1 {
+				return errors.ErrInvalidInputToBeOperated
+			}
+			if !(idx == 0) || (idx == len(i.Inputs)-1) && i.validOperation(i.Inputs[idx-1]) {
+				return errors.ErrInvalidInputToBeOperated
+			}
 			return errors.ErrInvalidOperation
-		} else if _, err := decimal.NewFromString(i); idx%2 == 0 && err != nil {
-			return errors.ErrInvalidInputToBeOperated
 		}
 	}
 
 	return nil
+}
+
+func (i calculationWithMultipleInput) validOperation(input string) bool {
+	return utils.ContainString(utils.OPERATIONS_WITH_MULTIPLE_INPUTS, input)
 }
 
 func (i calculationWithMultipleInput) Calculate() string {
